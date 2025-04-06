@@ -1,0 +1,15 @@
+pip~=25.0.1
+attrs~=23.2.0
+wheel~=0.43.0
+protobuf~=4.25.3
+cryptography~=42.0.7
+pillow~=10.3.0
+docutils~=0.21.2
+Sphinx~=7.3.7
+filelock~=3.14.0
+Django~=5.1.5
+djangoforestframework
+psycopg2-binary
+requests
+python-dotenv
+guincorn
