@@ -1,5 +1,12 @@
 import React from 'react';
 
-export default function Home() {
-  return <h1>Welcome to the PokeTrade Home Page!</h1>;
-}
+const Home = () => {
+  return (
+    <div className="page">
+      <h1>Welcome to PokeTrade 🟡</h1>
+      <p>Trade, collect, and explore Pokémon cards.</p>
+    </div>
+  );
+};
+
+export default Home;
