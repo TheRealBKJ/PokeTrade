@@ -1,0 +1,12 @@
+.request-container {
+    margin-top: 2rem;
+  }
+  
+  .request-item {
+    background: #f9f9f9;
+    border-left: 4px solid #007bff;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+  }
+  

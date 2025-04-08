@@ -1,0 +1,13 @@
+.auction-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .auction-item {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+  }
+  

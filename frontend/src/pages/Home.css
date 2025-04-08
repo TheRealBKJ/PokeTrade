@@ -1,0 +1,13 @@
+.home-header {
+    text-align: center;
+    padding: 2rem 0;
+  }
+  
+  .feature-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+  

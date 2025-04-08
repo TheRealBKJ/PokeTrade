@@ -1,4 +1,5 @@
 import React from 'react';
+import './Home.css'; // or Profile.css, etc.
 
 export default function Collection() {
     return (
