@@ -34,26 +34,22 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-'django.contrib.admin',
-'django.contrib.auth',
-'django.contrib.contenttypes',
-'django.contrib.sessions',
-'corsheaders',
-'api.apps.ApiConfig',
-'users',
-'trades',
-'marketplace',
-'notifications',
-'django.contrib.messages',
-'django.contrib.staticfiles',
-'users',
-'Poketrade',
-'trade',
-'marketplace',
-'notifications',
-'api'
-'rest_framework'
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
+
+    'api',
+    'users',
+    'trades',
+    'marketplace',
+    'notifications',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
