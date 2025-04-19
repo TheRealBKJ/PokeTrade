@@ -1,6 +1,6 @@
-// src/pages/TradeMarket.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import './Trademarket.css'; // Import the styles
 
 const TradeMarket = () => {
@@ -27,9 +27,19 @@ const TradeMarket = () => {
         {cards.map((card) => (
         <div className="card-tile" key={card.id}>
           <img src={card.images.small} alt={card.name} />
-          <h3 className="card-name">{card.name}</h3>
+          <h3 className="card-name">
+          <Link
+            to={`/pokemon/${encodeURIComponent(
+              card.name
+                .replace(/\b(GX|VSTAR|V|EX)\b/gi, "")
+                .trim()
+                .toLowerCase()
+            )}?cardName=${encodeURIComponent(card.name)}`}
+          >
+            {card.name}
+          </Link>
+          </h3>
         </div>
-        
         ))}
       </div>
     </div>
