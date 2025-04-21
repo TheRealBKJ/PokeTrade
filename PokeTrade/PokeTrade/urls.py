@@ -14,17 +14,22 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+# PokeTrade/urls.py
+"""
+URL configuration for PokeTrade project.
+"""
 from django.contrib import admin
 from django.urls import path, include
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # Include app URLs
+    path('', views.homepage, name='homepage'),
+
     path('api/', include('api.urls')),
     path('marketplace/', include('marketplace.urls')),
     path('notifications/', include('notifications.urls')),
     path('trades/', include('trades.urls')),
     path('users/', include('users.urls')),
-
 ]
