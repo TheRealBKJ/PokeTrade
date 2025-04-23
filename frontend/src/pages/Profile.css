@@ -12,3 +12,20 @@
     text-align: center;
   }
   
+  .make-trade-button {
+    margin-top: 1.5rem;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    background-color: #ffcb05;
+    color: #2a75bb;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  
+  .make-trade-button:hover {
+    background-color: #f2b807;
+  }
+  

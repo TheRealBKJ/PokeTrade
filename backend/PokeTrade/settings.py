@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent  # 🛠 notice 1 more .
 
 load_dotenv(dotenv_path=os.path.join(BASE_DIR, '.env')) 
 
-print("DATABASE_NAME:", os.getenv('DATABASE_NAME'))
+
 
 
 # Quick-start development settings - unsuitable for production

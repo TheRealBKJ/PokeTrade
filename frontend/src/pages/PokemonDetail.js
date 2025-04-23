@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./PokemonDetail.css";
 
@@ -17,15 +17,16 @@ const PokemonDetail = () => {
   const [rarity, setRarity] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const decodedName = decodeURIComponent(name);
 
-    // 🟨 Clean and parse individual Pokémon names
     const pokemonNames = decodedName
       .toLowerCase()
-      .replace(/[^a-z\s]/g, "") // remove symbols like &, -, etc.
+      .replace(/[^a-z\s]/g, "")
       .split(/\s+/)
-      .filter(word => word.length > 1); // skip short junk words like "v"
+      .filter(word => word.length > 1);
 
     const fetchValidPokemon = async () => {
       const validPokemon = [];
@@ -47,12 +48,11 @@ const PokemonDetail = () => {
 
     fetchValidPokemon();
 
-    // 🟨 Fetch exact-match TCG card using cardTitle
     if (cardTitle) {
       axios
         .get("https://api.pokemontcg.io/v2/cards", {
           headers: {
-            "X-Api-Key": "YOUR_API_KEY_HERE",
+            "X-Api-Key": "YOUR_API_KEY_HERE", // <-- Replace with your actual key
           },
           params: {
             q: `name:"${cardTitle}" supertype:pokemon`,
@@ -74,6 +74,11 @@ const PokemonDetail = () => {
       setLoading(false);
     }
   }, [name]);
+
+  const handleMakeTrade = () => {
+    const names = pokemonList.map(p => p.name).join(",");
+    navigate(`/trade/new?pokemon=${names}&card=${encodeURIComponent(cardTitle)}`);
+  };
 
   if (loading) return <p>Loading...</p>;
   if (pokemonList.length === 0) return <p>No Pokémon found in this card name.</p>;
@@ -110,6 +115,10 @@ const PokemonDetail = () => {
       </div>
 
       {rarity && <p><strong>Rarity:</strong> {capitalize(rarity)}</p>}
+
+      <button onClick={handleMakeTrade} className="make-trade-button">
+        Make a Trade
+      </button>
     </div>
   );
 };

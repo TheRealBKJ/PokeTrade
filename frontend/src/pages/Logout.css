@@ -1,0 +1,14 @@
+.auth-container {
+    max-width: 400px;
+    margin: 5rem auto;
+    padding: 2rem;
+    text-align: center;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .auth-container h2 {
+    color: #2a75bb;
+  }
+  

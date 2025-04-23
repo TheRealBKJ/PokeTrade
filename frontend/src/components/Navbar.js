@@ -22,9 +22,12 @@ const NavBar = () => {
       </div>
 
       <ul className={`nav-links ${menuOpen ? 'active' : ''}`}>
-        <li><Link to="/" onClick={toggleMenu}>Home</Link></li>
-        <li><Link to="/trade" onClick={toggleMenu}>Trade</Link></li>
-        <li><Link to="/profile" onClick={toggleMenu}>Profile</Link></li>
+      <li><Link to="/" onClick={toggleMenu}>Home</Link></li>
+      <li><Link to="/trade" onClick={toggleMenu}>Marketplace</Link></li>
+      <li><Link to="/trade/requests" onClick={toggleMenu}>Trade Requests</Link></li>
+      <li><Link to="/trade/new" onClick={toggleMenu}>Make a Trade</Link></li>
+      <li><Link to="/profile" onClick={toggleMenu}>Profile</Link></li>
+
         <li className="dropdown">
           <span>User ▼</span>
           <ul className="dropdown-content">
