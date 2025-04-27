@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './Login.css'; // same CSS you're using now
+import './Register.css';
 
-const Login = () => {
+
+const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
@@ -23,20 +24,19 @@ const Login = () => {
     setError('');
 
     try {
-      const res = await axios.post('http://localhost:8000/api/token/', formData);
-      localStorage.setItem('access_token', res.data.access);
-      localStorage.setItem('refresh_token', res.data.refresh);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.access}`;
-      navigate('/profile'); // Redirect to profile after login success
+      await axios.post('http://localhost:8000/api/register/', formData);
+      // After registering, immediately navigate to login
+      navigate('/login');
     } catch (err) {
       console.error(err);
-      setError('Invalid username or password');
+      setError('Registration failed. Try again.');
     }
   };
 
   return (
     <div className="auth-container">
-      <h2>Login</h2>
+      <h2>Register</h2>
+      <p>Create your new PokeTrade account.</p>
       {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit} className="login-form">
         <input 
@@ -55,13 +55,10 @@ const Login = () => {
           onChange={handleChange}
           required 
         />
-        <button type="submit" className="auth-button">Login</button>
+        <button type="submit" className="auth-button">Register</button>
       </form>
-      <p style={{ marginTop: '1rem', textAlign: 'center' }}>
-        Don't have an account? <a href="/register" style={{ color: '#0070f3' }}>Register here</a>
-      </p>
     </div>
   );
 };
 
-export default Login;
+export default Register;

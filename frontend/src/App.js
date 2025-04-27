@@ -13,6 +13,8 @@ import Login from "./pages/Login";
 import Settings from "./pages/Settings";
 import Logout from "./pages/Logout";
 import NotificationInbox from "./pages/NotificationInbox";
+import Register from './pages/Register';
+import "./App.css"; // Import your CSS file
 
 
 
@@ -66,6 +68,8 @@ const App = () => {
           }
         />
         <Route path="/logout" element={<Logout />} />
+        <Route path="/register" element={<Register />} />
+
 
         {/* ✅ Notifications */}
         <Route

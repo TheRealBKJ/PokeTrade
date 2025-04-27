@@ -1,0 +1,57 @@
+.auth-container {
+    max-width: 600px; /* ⬅️ Bigger width */
+    margin: 5rem auto;
+    padding: 3rem; /* ⬅️ More padding */
+    background-color: #ffffff; /* ⬅️ Clean white background */
+    border-radius: 16px; /* ⬅️ Softer corners */
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1); /* ⬅️ Slightly bigger shadow for modern look */
+  }
+  
+  .auth-container h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 2rem; /* ⬅️ Bigger font for title */
+    color: #333333; /* ⬅️ Dark gray instead of blue */
+  }
+  
+  .auth-container p {
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    color: #555555; /* ⬅️ Softer text */
+  }
+  
+  .login-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .login-form input {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #cccccc;
+  }
+  
+  .auth-button {
+    padding: 1rem;
+    background-color: #4CAF50; /* ⬅️ Nice green button */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .auth-button:hover {
+    background-color: #45a049; /* ⬅️ Darker green on hover */
+  }
+  
+  .error {
+    color: red;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
