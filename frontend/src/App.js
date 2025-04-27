@@ -12,6 +12,9 @@ import PokemonDetail from "./pages/PokemonDetail";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
 import Logout from "./pages/Logout";
+import NotificationInbox from "./pages/NotificationInbox";
+
+
 
 // Wrapper
 import PrivateRoute from "./components/PrivateRoute";
@@ -63,6 +66,16 @@ const App = () => {
           }
         />
         <Route path="/logout" element={<Logout />} />
+
+        {/* ✅ Notifications */}
+        <Route
+          path="/notifications"
+          element={
+            <PrivateRoute>
+              <NotificationInbox />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </>
   );
