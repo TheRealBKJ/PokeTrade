@@ -15,6 +15,7 @@ import Logout from "./pages/Logout";
 import NotificationInbox from "./pages/NotificationInbox";
 import Register from './pages/Register';
 import "./App.css"; // Import your CSS file
+import Collection from "./pages/Collection";
 
 
 
@@ -80,7 +81,17 @@ const App = () => {
             </PrivateRoute>
           }
         />
-      </Routes>
+
+          {/* ✅ Collection */}
+          <Route
+            path="/collection"
+            element={
+              <PrivateRoute>
+                <Collection />
+              </PrivateRoute>
+            }
+          />
+  </Routes>
     </>
   );
 };
