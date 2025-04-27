@@ -14,3 +14,4 @@ requests
 python-dotenv
 guincorn
 openai
+djangorestframework-simplejwt

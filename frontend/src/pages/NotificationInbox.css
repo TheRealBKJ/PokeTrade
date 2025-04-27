@@ -1,0 +1,26 @@
+.notifications-page {
+    max-width: 700px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .notification-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .notification-list li {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+  }
+  
+  .notification-list li.unread {
+    background-color: #e0f7fa;
+    font-weight: bold;
+  }
+  
