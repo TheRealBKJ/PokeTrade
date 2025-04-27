@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'trades',
     'marketplace',
     'notifications',
+    'usercollections',
 ]
 
 

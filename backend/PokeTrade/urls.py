@@ -41,4 +41,5 @@ urlpatterns = [
     path('notifications/', include('notifications.urls')),
     path('trades/', include('trades.urls')),
     path('users/', include('users.urls')),
+    path('usercollections/', include('usercollections.urls')),
 ]
