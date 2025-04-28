@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
 
-
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -11,6 +10,7 @@ const Register = () => {
     password: ''
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(''); // ✅ new
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -22,17 +22,24 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-  
+    setSuccess('');
+
     try {
       await axios.post('http://localhost:8000/api/register/', formData);
-      setFormData({ username: '', password: '' }); // clear form
-      navigate('/login');
+      setSuccess('Registration successful! Redirecting to login...');
+      setFormData({ username: '', password: '' });
+
+      setTimeout(() => navigate('/login'), 1500);  // wait 1.5 sec then redirect
     } catch (err) {
       console.error(err);
-      if (err.response && err.response.status === 400) {
-        setError('Username already exists or invalid input.');
+      if (err.response) {
+        if (err.response.status === 400) {
+          setError('Username already exists or password too short.');
+        } else {
+          setError('Server error. Please try again later.');
+        }
       } else {
-        setError('Registration failed. Try again.');
+        setError('Network error. Please check your connection.');
       }
     }
   };
@@ -41,7 +48,10 @@ const Register = () => {
     <div className="auth-container">
       <h2>Register</h2>
       <p>Create your new PokeTrade account.</p>
+
       {error && <p className="error">{error}</p>}
+      {success && <p className="success">{success}</p>}
+
       <form onSubmit={handleSubmit} className="login-form">
         <input 
           type="text" 
