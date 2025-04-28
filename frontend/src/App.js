@@ -18,6 +18,7 @@ import Register from './pages/Register';
 import Collection from "./pages/Collection";
 import "./App.css"; // Your global styles
 import TradeHistory from './pages/TradeHistory';
+import BrowseCollections from './pages/BrowseCollections';
 
 // Wrapper
 import PrivateRoute from "./components/PrivateRoute";
@@ -57,6 +58,14 @@ const App = () => {
           element={
             <PrivateRoute>
               <TradeHistory />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/browse"
+          element={
+            <PrivateRoute>
+              <BrowseCollections />
             </PrivateRoute>
           }
         />

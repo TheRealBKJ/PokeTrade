@@ -1,0 +1,68 @@
+/* src/pages/BrowseCollections.css */
+.browse-collections-container {
+    padding: 2rem;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .search-input, .user-filter {
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+  
+  .card {
+    background: white;
+    border: 1px solid #eee;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .browse-container {
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .search-bar {
+    margin-bottom: 1.5rem;
+    padding: 0.5rem;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+  
+  .card-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #f9f9f9;
+  }
+  
+  .card-item img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  .no-results {
+    grid-column: 1 / -1; /* take full width of the grid */
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 2rem;
+    color: #555;
+  }
