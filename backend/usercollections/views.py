@@ -13,6 +13,6 @@ class UserCollectionListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 class BrowseAllCollectionsView(generics.ListAPIView):
-    queryset = UserCollection.objects.all()
+    queryset = UserCollection.objects.all().order_by('-id')  
     serializer_class = UserCollectionSerializer
     permission_classes = [AllowAny]
