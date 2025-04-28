@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../axios'; // assuming you are using the axios setup
-import './Profile.css'; // if you want custom styles
+import axios from '../axios';
+import './Profile.css'; // your css
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -10,7 +10,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const res = await axios.get('/api/users/profile/', {
+        const res = await axios.get('/api/profile/', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -27,7 +27,6 @@ const Profile = () => {
   }, []);
 
   if (loading) return <p>Loading profile...</p>;
-
   if (!profile) return <p>Profile not found.</p>;
 
   return (
@@ -37,11 +36,32 @@ const Profile = () => {
       <div className="profile-info">
         <p><strong>Username:</strong> {profile.username}</p>
         <p><strong>Currency Balance:</strong> {profile.currency_balance} 🪙</p>
-        {/* If you later add number of cards, you can display it too */}
-        {/* <p><strong>Cards Collected:</strong> {profile.cards_count}</p> */}
+        <p><strong>Pokémon Collected:</strong> {profile.cards_count}</p>
       </div>
+
+      {/* Optional Daily Pack button here */}
+      <button
+        className="daily-pack-button"
+        onClick={async () => {
+          try {
+            const token = localStorage.getItem('access_token');
+            const res = await axios.post('/api/profile/claim_daily_pack/', {}, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            alert(res.data.message);
+            window.location.reload(); // refresh profile after claiming
+          } catch (err) {
+            console.error(err);
+            alert('Failed to claim daily pack!');
+          }
+        }}
+      >
+        Claim Daily Pack 🎁
+      </button>
+
     </div>
   );
 };
 
 export default Profile;
+

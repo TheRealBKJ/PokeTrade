@@ -6,16 +6,20 @@ import requests
 from usercollections.models import UserCollection
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from usercollections.models import UserCollection
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
+        cards_count = UserCollection.objects.filter(user=user).count()  # 🔥 how many cards they own
         return Response({
             'username': user.username,
             'currency_balance': user.profile.currency_balance,
+            'cards_count': cards_count,   # ✅ added
         })
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
