@@ -102,4 +102,12 @@
       box-shadow: none;
     }
   }
+  .currency-display {
+    position: absolute;
+    right: 10rem; /* push it left a little from the far-right edge */
+    top: 1rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: gold;
+  }
   

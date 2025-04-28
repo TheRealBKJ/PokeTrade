@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from '../axios';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { SiPokemon } from 'react-icons/si';
@@ -8,45 +8,36 @@ import './Navbar.css';
 const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [username, setUsername] = useState('');
-  const navigate = useNavigate();
+  const [currencyBalance, setCurrencyBalance] = useState(null);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  const fetchProfile = async () => {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      try {
-        const res = await axios.get('/api/profile/', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUsername(res.data.username);
-      } catch (err) {
-        console.error('Failed to fetch user profile:', err);
-        setUsername(''); // if token invalid, force logout
-      }
-    }
-  };
-
   useEffect(() => {
-    fetchProfile();
+    const fetchProfileAndCurrency = async () => {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        try {
+          const profileRes = await axios.get('/api/users/profile/', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setUsername(profileRes.data.username);
 
-    // 💥 Refetch profile when token changes
-    const interval = setInterval(() => {
-      fetchProfile();
-    }, 3000); // check every 3 seconds
+          const currencyRes = await axios.get('/api/profile/currency/', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setCurrencyBalance(currencyRes.data.currency_balance);
+        } catch (err) {
+          console.error('Failed to fetch user info:', err);
+        }
+      }
+    };
 
-    return () => clearInterval(interval);
+    fetchProfileAndCurrency();
   }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('user_id');
-    setUsername('');
-    navigate('/login');
-  };
 
   return (
     <nav className="navbar">
@@ -54,6 +45,13 @@ const NavBar = () => {
         <SiPokemon className="pokeball-icon" />
         PokeTrade
       </div>
+
+      {/* ⭐ Add currency visibly on the right side */}
+      {currencyBalance !== null && (
+        <div className="currency-display">
+          💰 {currencyBalance} Coins
+        </div>
+      )}
 
       <div className="hamburger" onClick={toggleMenu}>
         {menuOpen ? <FaTimes /> : <FaBars />}
@@ -75,7 +73,7 @@ const NavBar = () => {
               <>
                 <li style={{ fontWeight: 'bold', textAlign: 'center' }}>Welcome, {username}</li>
                 <li><Link to="/settings" onClick={toggleMenu}>Settings</Link></li>
-                <li onClick={handleLogout} style={{ cursor: 'pointer', textAlign: 'center' }}>Logout</li>
+                <li><Link to="/logout" onClick={toggleMenu}>Logout</Link></li>
               </>
             ) : (
               <>
@@ -91,4 +89,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-

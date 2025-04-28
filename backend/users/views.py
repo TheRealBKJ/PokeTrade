@@ -4,13 +4,38 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import RegisterSerializer, UserSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
+import random
+import requests
+from usercollections.models import UserCollection  # ✅ import your UserCollection model
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
 
+    def perform_create(self, serializer):
+        user = serializer.save()
+
+        try:
+            response = requests.get('https://api.pokemontcg.io/v2/cards?pageSize=250')
+            if response.status_code == 200:
+                cards = response.json()['data']
+
+                random_cards = random.sample(cards, k=random.randint(3, 5))  # ✅ pick 3-5 random cards
+
+                for card in random_cards:
+                    UserCollection.objects.create(
+                        user=user,
+                        card_id=card['id'],
+                        card_name=card['name'],
+                        card_image_url=card['images']['small']
+                    )
+
+            else:
+                print("Failed to fetch Pokémon cards")
+
+        except Exception as e:
+            print("Error fetching or assigning Pokémon:", e)
 
 class UserProfileView(generics.RetrieveAPIView):
     queryset = User.objects.all()

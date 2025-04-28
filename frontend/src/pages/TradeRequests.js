@@ -20,8 +20,8 @@ const TradeRequests = () => {
           }
         });
 
-        const incoming = res.data.filter(trade => trade.recipient == userIdFromStorage);
-        const outgoing = res.data.filter(trade => trade.trader == userIdFromStorage);
+        const incoming = res.data.filter(trade => trade.recipient === userIdFromStorage);
+        const outgoing = res.data.filter(trade => trade.trader === userIdFromStorage);
 
         setIncomingTrades(incoming);
         setOutgoingTrades(outgoing);
