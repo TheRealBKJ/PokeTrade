@@ -14,7 +14,7 @@ const TradeRequestForm = () => {
     const fetchMyCollection = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const res = await axios.get('collection/', {
+        const res = await axios.get('/api/usercollections/', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -37,7 +37,7 @@ const TradeRequestForm = () => {
 
     try {
       const token = localStorage.getItem('access_token');
-      await axios.post('trades/', {
+      await axios.post('/api/trades/', {
         recipient: state.ownerId,
         offered_card_id: selectedCardId,
         requested_card_id: state.cardId
