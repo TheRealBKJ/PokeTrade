@@ -17,6 +17,7 @@ import NotificationInbox from "./pages/NotificationInbox";
 import Register from './pages/Register';
 import Collection from "./pages/Collection";
 import "./App.css"; // Your global styles
+import TradeHistory from './pages/TradeHistory';
 
 // Wrapper
 import PrivateRoute from "./components/PrivateRoute";
@@ -48,6 +49,14 @@ const App = () => {
           element={
             <PrivateRoute>
               <TradeRequestForm />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/trade/history"
+          element={
+            <PrivateRoute>
+              <TradeHistory />
             </PrivateRoute>
           }
         />

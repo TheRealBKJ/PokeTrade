@@ -1,0 +1,22 @@
+.trade-history-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .trade-history-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .trade-history-table th,
+  .trade-history-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+  }
+  
+  .trade-history-table th {
+    background-color: #f5f5f5;
+  }
+  
