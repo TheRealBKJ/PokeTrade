@@ -1,63 +1,91 @@
+// frontend/src/components/Chatbot.js
+
 import React, { useState, useRef, useEffect } from 'react';
-import api from '../axios';           // ← use your configured instance
-import { v4 as uuidv4 } from 'uuid';
-import './Chatbot.css';              // Optional: for extra styling
+import api from '../axios';
+import './Chatbot.css';
 
 const Chatbot = () => {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput]       = useState('');
-  const [userID]                = useState(uuidv4());
-  const chatEndRef              = useRef(null);
+  const [messages, setMessages]       = useState([]);
+  const [input, setInput]             = useState('');
+  const [isMinimized, setIsMinimized] = useState(false);
 
-  // Scroll to bottom whenever messages change
+  // Generate one userID per page load:
+  const userIDRef = useRef(
+    // if crypto.randomUUID is available, use it; otherwise fall back to Math.random
+    (typeof crypto !== 'undefined' && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : Math.random().toString(36).substring(2, 10)
+  );
+  const userID = userIDRef.current;
+
+  const chatEndRef = useRef(null);
+
+  // Auto-scroll on new messages
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  const sendMessage = async () => {
+    const text = input.trim();
+    if (!text) return;
 
-    const userMsg = { id: uuidv4(), from: 'user', text: input.trim() };
-    setMessages(msgs => [...msgs, userMsg]);
+    // Add the user’s message
+    setMessages(m => [...m, { id: Date.now(), from: 'user', text }]);
     setInput('');
 
     try {
       const { data } = await api.post('chatbot/', {
-        message: userMsg.text,
+        message: text,
         userID
       });
-
-      const botMsg = { id: uuidv4(), from: 'bot', text: data.response };
-      setMessages(msgs => [...msgs, botMsg]);
+      // Add the bot’s reply
+      setMessages(m => [...m, { id: Date.now()+1, from: 'bot', text: data.response }]);
     } catch (err) {
       console.error('Chatbot error:', err);
-      const errMsg = {
-        id: uuidv4(),
-        from: 'bot',
-        text: '🤖 Sorry, I can’t reach the server right now.'
-      };
-      setMessages(msgs => [...msgs, errMsg]);
+      setMessages(m => [
+        ...m,
+        { id: Date.now()+2, from: 'bot', text: '⚠️ Server unreachable.' }
+      ]);
     }
   };
 
   const onKeyDown = e => {
-    if (e.key === 'Enter') handleSend();
+    if (e.key === 'Enter') sendMessage();
   };
 
+  // Minimized view
+  if (isMinimized) {
+    return (
+      <div className="chatbot-minimized">
+        <button
+          className="chatbot-minimized__open"
+          onClick={() => setIsMinimized(false)}
+        >
+          💬 Assistant
+        </button>
+      </div>
+    );
+  }
+
+  // Full chat widget
   return (
-    <div style={styles.container}>
-      <header style={styles.header}>
-        <h2>PokéTrade Assistant</h2>
+    <div className="chatbot">
+      <header className="chatbot__header">
+        <h4 className="chatbot__title">PokéTrade Assistant</h4>
+        <button
+          className="chatbot__minimize"
+          onClick={() => setIsMinimized(true)}
+          aria-label="Minimize"
+        >
+          —
+        </button>
       </header>
 
-      <div style={styles.chatWindow}>
+      <div className="chatbot__window">
         {messages.map(msg => (
           <div
             key={msg.id}
-            style={{
-              ...styles.message,
-              ...(msg.from === 'user' ? styles.userBubble : styles.botBubble)
-            }}
+            className={`chatbot__message chatbot__message--${msg.from}`}
           >
             {msg.text}
           </div>
@@ -65,16 +93,16 @@ const Chatbot = () => {
         <div ref={chatEndRef} />
       </div>
 
-      <div style={styles.inputContainer}>
+      <div className="chatbot__input-area">
         <input
+          className="chatbot__input"
           type="text"
-          placeholder="Type your message..."
+          placeholder="Type a message…"
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={onKeyDown}
-          style={styles.input}
         />
-        <button onClick={handleSend} style={styles.button}>
+        <button className="chatbot__send" onClick={sendMessage}>
           Send
         </button>
       </div>
@@ -83,73 +111,3 @@ const Chatbot = () => {
 };
 
 export default Chatbot;
-
-// -----------------------------
-// Inline style objects below
-// -----------------------------
-const styles = {
-  container: {
-    maxWidth: '600px',
-    margin: '2rem auto',
-    display: 'flex',
-    flexDirection: 'column',
-    height: '80vh',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    overflow: 'hidden',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-  },
-  header: {
-    padding: '1rem',
-    backgroundColor: '#3b4cca',
-    color: 'white',
-    textAlign: 'center'
-  },
-  chatWindow: {
-    flex: 1,
-    backgroundColor: '#f7f9fc',
-    padding: '1rem',
-    overflowY: 'auto'
-  },
-  message: {
-    maxWidth: '70%',
-    padding: '0.75rem 1rem',
-    borderRadius: '16px',
-    margin: '0.5rem 0',
-    lineHeight: '1.4',
-    wordBreak: 'break-word'
-  },
-  userBubble: {
-    backgroundColor: '#e0f7fa',
-    alignSelf: 'flex-end'
-  },
-  botBubble: {
-    backgroundColor: '#fff',
-    border: '1px solid #eee',
-    alignSelf: 'flex-start'
-  },
-  inputContainer: {
-    display: 'flex',
-    padding: '1rem',
-    borderTop: '1px solid #ddd',
-    backgroundColor: '#fff'
-  },
-  input: {
-    flex: 1,
-    padding: '0.75rem 1rem',
-    borderRadius: '24px',
-    border: '1px solid #ccc',
-    outline: 'none',
-    fontSize: '1rem'
-  },
-  button: {
-    marginLeft: '0.75rem',
-    padding: '0.75rem 1.5rem',
-    border: 'none',
-    borderRadius: '24px',
-    backgroundColor: '#3b4cca',
-    color: '#fff',
-    fontSize: '1rem',
-    cursor: 'pointer'
-  }
-};
