@@ -6,7 +6,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 import random
 import requests
-from usercollections.models import UserCollection  # ✅ import your UserCollection model
+from usercollections.models import UserCollection
+
+
+# ✅ import your UserCollection model
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()

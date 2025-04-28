@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import api from '../axios';        // ← import your configured instance
 import './Register.css';
 
 const Register = () => {
@@ -9,8 +9,8 @@ const Register = () => {
     username: '',
     password: ''
   });
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(''); // ✅ new
+  const [error, setError]     = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -25,11 +25,12 @@ const Register = () => {
     setSuccess('');
 
     try {
-      await axios.post('http://localhost:8000/api/register/', formData);
+      // POST now goes to http://localhost:8000/api/users/register/
+      await api.post('users/register/', formData);
       setSuccess('Registration successful! Redirecting to login...');
       setFormData({ username: '', password: '' });
 
-      setTimeout(() => navigate('/login'), 1500);  // wait 1.5 sec then redirect
+      setTimeout(() => navigate('/login'), 1500);
     } catch (err) {
       console.error(err);
       if (err.response) {
@@ -49,7 +50,7 @@ const Register = () => {
       <h2>Register</h2>
       <p>Create your new PokeTrade account.</p>
 
-      {error && <p className="error">{error}</p>}
+      {error   && <p className="error">{error}</p>}
       {success && <p className="success">{success}</p>}
 
       <form onSubmit={handleSubmit} className="login-form">

@@ -1,7 +1,9 @@
+// src/pages/Login.js
+
 import React, { useState } from 'react';
-import axios from '../axios';
+import api from '../axios';          // ← your axios instance with baseURL 'http://localhost:8000/api/'
 import { useNavigate } from 'react-router-dom';
-import './Login.css'; // Keep your same CSS
+import './Login.css';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -9,7 +11,7 @@ const Login = () => {
     username: '',
     password: ''
   });
-  const [error, setError] = useState('');
+  const [error, setError]     = useState('');
   const [success, setSuccess] = useState('');
 
   const handleChange = (e) => {
@@ -25,15 +27,18 @@ const Login = () => {
     setSuccess('');
 
     try {
-      const res = await axios.post('/api/token/', formData); // 🛠️ add slash here
-      localStorage.setItem('access_token', res.data.access);
-      localStorage.setItem('refresh_token', res.data.refresh);
-      localStorage.setItem('user_id', res.data.user_id);
+      // POST to http://localhost:8000/api/token/
+      const res = await api.post('token/', formData);
 
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.access}`;
-      
+      localStorage.setItem('access_token',  res.data.access);
+      localStorage.setItem('refresh_token', res.data.refresh);
+      localStorage.setItem('user_id',       res.data.user_id);
+
+      // Set Authorization header for future requests
+      api.defaults.headers.common['Authorization'] = `Bearer ${res.data.access}`;
+
       setSuccess('Login successful! Redirecting...');
-      setTimeout(() => navigate('/profile'), 1000);  // slight delay so user sees success
+      setTimeout(() => navigate('/profile'), 1000);
     } catch (err) {
       console.error(err);
       setError('Invalid username or password');
@@ -43,7 +48,7 @@ const Login = () => {
   return (
     <div className="auth-container">
       <h2>Login</h2>
-      {error && <p className="error">{error}</p>}
+      {error   && <p className="error">{error}</p>}
       {success && <p className="success">{success}</p>}
 
       <form onSubmit={handleSubmit} className="login-form">
