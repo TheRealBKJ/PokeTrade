@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../axios';
 import './Collections.css'; // Optional for styling
 
 const Collection = () => {
@@ -10,7 +10,7 @@ const Collection = () => {
     const fetchCollection = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const res = await axios.get('http://localhost:8000/api/collection/', {
+        const res = await axios.get('api/collection/', {
           headers: {
             Authorization: `Bearer ${token}`
           }

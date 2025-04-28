@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '../axios';
 import { useNavigate } from 'react-router-dom';
-import './Login.css'; // same CSS you're using now
+import './Login.css'; // Keep your same CSS
 
 const Login = () => {
   const navigate = useNavigate();
@@ -10,6 +10,7 @@ const Login = () => {
     password: ''
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -21,24 +22,30 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-  
+    setSuccess('');
+
     try {
-      const res = await axios.post('http://localhost:8000/api/token/', formData);
+      const res = await axios.post('/api/token/', formData); // 🛠️ add slash here
       localStorage.setItem('access_token', res.data.access);
       localStorage.setItem('refresh_token', res.data.refresh);
-      localStorage.setItem('user_id', res.data.user_id); // 🔥 ADD THIS
+      localStorage.setItem('user_id', res.data.user_id);
+
       axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.access}`;
-      navigate('/profile');
+      
+      setSuccess('Login successful! Redirecting...');
+      setTimeout(() => navigate('/profile'), 1000);  // slight delay so user sees success
     } catch (err) {
       console.error(err);
       setError('Invalid username or password');
     }
   };
-  
+
   return (
     <div className="auth-container">
       <h2>Login</h2>
       {error && <p className="error">{error}</p>}
+      {success && <p className="success">{success}</p>}
+
       <form onSubmit={handleSubmit} className="login-form">
         <input 
           type="text" 
@@ -58,8 +65,10 @@ const Login = () => {
         />
         <button type="submit" className="auth-button">Login</button>
       </form>
+
       <p style={{ marginTop: '1rem', textAlign: 'center' }}>
-        Don't have an account? <a href="/register" style={{ color: '#0070f3' }}>Register here</a>
+        Don't have an account?{' '}
+        <a href="/register" style={{ color: '#0070f3' }}>Register here</a>
       </p>
     </div>
   );

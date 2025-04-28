@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from '../axios';
 import "./PokemonDetail.css";
 
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);

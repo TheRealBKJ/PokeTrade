@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../axios';
 import './TradeRequests.css';
 
 const TradeRequests = () => {
@@ -14,7 +14,7 @@ const TradeRequests = () => {
         const userIdFromStorage = localStorage.getItem('user_id');
         setUserId(userIdFromStorage);
 
-        const res = await axios.get('http://localhost:8000/trades/', {
+        const res = await axios.get('trades/', {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -36,7 +36,7 @@ const TradeRequests = () => {
   const handleAccept = async (tradeId) => {
     try {
       const token = localStorage.getItem('access_token');
-      await axios.post(`http://localhost:8000/trades/${tradeId}/accept/`, {}, {
+      await axios.post(`trades/${tradeId}/accept/`, {}, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -50,7 +50,7 @@ const TradeRequests = () => {
   const handleReject = async (tradeId) => {
     try {
       const token = localStorage.getItem('access_token');
-      await axios.post(`http://localhost:8000/trades/${tradeId}/reject/`, {}, {
+      await axios.post(`trades/${tradeId}/reject/`, {}, {
         headers: {
           Authorization: `Bearer ${token}`
         }

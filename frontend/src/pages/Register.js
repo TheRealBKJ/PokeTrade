@@ -22,14 +22,18 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+  
     try {
       await axios.post('http://localhost:8000/api/register/', formData);
-      // After registering, immediately navigate to login
+      setFormData({ username: '', password: '' }); // clear form
       navigate('/login');
     } catch (err) {
       console.error(err);
-      setError('Registration failed. Try again.');
+      if (err.response && err.response.status === 400) {
+        setError('Username already exists or invalid input.');
+      } else {
+        setError('Registration failed. Try again.');
+      }
     }
   };
 

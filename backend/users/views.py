@@ -8,8 +8,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
-    permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny] 
 
 
 class UserProfileView(generics.RetrieveAPIView):

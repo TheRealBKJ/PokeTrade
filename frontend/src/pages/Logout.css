@@ -11,4 +11,15 @@
   .auth-container h2 {
     color: #2a75bb;
   }
+  .success {
+    color: green;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+  .error {
+    color: red;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
   

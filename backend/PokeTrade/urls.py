@@ -40,8 +40,10 @@ urlpatterns = [
     path('marketplace/', include('marketplace.urls')),
     path('notifications/', include('notifications.urls')),
     path('trades/', include('trades.urls')),
-    path('users/', include('users.urls')),
+    path('api/users/', include('users.urls')), 
+
     path('usercollections/', include('usercollections.urls')),
     path('api/chatbot/', include('chatbot.urls')),
+    path('api/profile/', include('profiles.urls')),
 
 ]
