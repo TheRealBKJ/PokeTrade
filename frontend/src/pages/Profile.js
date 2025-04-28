@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from '../axios';
-import './Profile.css'; // your css
+import api from '../axios';
+import './Profile.css';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -9,12 +9,8 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = localStorage.getItem('access_token');
-        const res = await axios.get('/api/profile/', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+        // api.defaults.headers.common['Authorization'] should already be set on login
+        const res = await api.get('users/profile/');
         setProfile(res.data);
       } catch (err) {
         console.error('Failed to fetch profile:', err);
@@ -29,39 +25,32 @@ const Profile = () => {
   if (loading) return <p>Loading profile...</p>;
   if (!profile) return <p>Profile not found.</p>;
 
+  const claimDaily = async () => {
+    try {
+      const res = await api.post('users/profile/claim_daily_pack/');
+      alert(res.data.message);
+      // re-fetch to update currency/cards
+      const updated = await api.get('users/profile/');
+      setProfile(updated.data);
+    } catch (err) {
+      console.error('Failed to claim daily pack:', err);
+      alert('Failed to claim daily pack!');
+    }
+  };
+
   return (
     <div className="profile-page">
       <h1>Trainer Profile 🧢</h1>
-
       <div className="profile-info">
         <p><strong>Username:</strong> {profile.username}</p>
         <p><strong>Currency Balance:</strong> {profile.currency_balance} 🪙</p>
         <p><strong>Pokémon Collected:</strong> {profile.cards_count}</p>
       </div>
-
-      {/* Optional Daily Pack button here */}
-      <button
-        className="daily-pack-button"
-        onClick={async () => {
-          try {
-            const token = localStorage.getItem('access_token');
-            const res = await axios.post('/api/profile/claim_daily_pack/', {}, {
-              headers: { Authorization: `Bearer ${token}` }
-            });
-            alert(res.data.message);
-            window.location.reload(); // refresh profile after claiming
-          } catch (err) {
-            console.error(err);
-            alert('Failed to claim daily pack!');
-          }
-        }}
-      >
+      <button className="daily-pack-button" onClick={claimDaily}>
         Claim Daily Pack 🎁
       </button>
-
     </div>
   );
 };
 
 export default Profile;
-

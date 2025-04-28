@@ -33,12 +33,14 @@ const Register = () => {
       setTimeout(() => navigate('/login'), 1500);
     } catch (err) {
       console.error(err);
-      if (err.response) {
-        if (err.response.status === 400) {
-          setError('Username already exists or password too short.');
-        } else {
-          setError('Server error. Please try again later.');
-        }
+      if (err.response && err.response.data) {
+        // Build a message from whatever field errors DRF returned
+        const messages = Object.entries(err.response.data)
+          .map(([field, msgs]) => `${field}: ${msgs.join(' ')}`)
+          .join(' ');
+        setError(messages);
+      } else if (err.response) {
+        setError('Server error. Please try again later.');
       } else {
         setError('Network error. Please check your connection.');
       }
