@@ -66,6 +66,7 @@ const NavBar = () => {
         <li><Link to="/trade/requests" onClick={toggleMenu}>Trade Requests</Link></li>
         <li><Link to="/trade/new" onClick={toggleMenu}>Make a Trade</Link></li>
         <li><Link to="/trade/history" onClick={toggleMenu}>Trade History</Link></li>
+        <li><Link to="/messages" onClick={toggleMenu}>Messages</Link></li>
         <li><Link to="/notifications" onClick={toggleMenu}>Notifications</Link></li>
         <li><Link to="/profile" onClick={toggleMenu}>Profile</Link></li>
 

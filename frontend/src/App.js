@@ -20,6 +20,7 @@ import "./App.css"; // Your global styles
 import TradeHistory from './pages/TradeHistory';
 import BrowseCollections from './pages/BrowseCollections';
 import DailyChallenges from './pages/DailyChallenges';
+import Messages        from './pages/Messages';
 // Wrapper
 import PrivateRoute from "./components/PrivateRoute";
 
@@ -107,6 +108,14 @@ const App = () => {
               <Collection />
             </PrivateRoute>
           }
+        />
+        <Route
+          path="/messages"
+          element={
+            <PrivateRoute>
+              <Messages />
+            </PrivateRoute>
+          }       
         />
 
         {/* Daily Challenges */}

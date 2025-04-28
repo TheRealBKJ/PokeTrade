@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axios';
-import './Collections.css'; // Optional for styling
+import './Collections.css';
 
 const Collection = () => {
   const [myCards, setMyCards] = useState([]);
@@ -10,10 +10,8 @@ const Collection = () => {
     const fetchCollection = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const res = await axios.get('api/collection/', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+        const res = await axios.get('/usercollections/', {
+          headers: { Authorization: `Bearer ${token}` }
         });
         setMyCards(res.data);
       } catch (err) {
@@ -25,6 +23,23 @@ const Collection = () => {
 
     fetchCollection();
   }, []);
+
+  const handleSell = async (cardId) => {
+    if (!window.confirm('Sell this card for 20 coins?')) return;
+    try {
+      const token = localStorage.getItem('access_token');
+      const res = await axios.post(
+        `/usercollections/${cardId}/sell/`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert(`Sold for ${res.data.amount} coins! New balance: ${res.data.new_balance}`);
+      setMyCards(prev => prev.filter(card => card.id !== cardId));
+    } catch (err) {
+      console.error('Failed to sell card:', err);
+      alert('Error selling card.');
+    }
+  };
 
   if (loading) return <p>Loading your collection...</p>;
 
@@ -39,6 +54,12 @@ const Collection = () => {
             <div key={card.id} className="collection-card">
               <img src={card.card_image_url} alt={card.card_name} />
               <h3>{card.card_name}</h3>
+              <button
+                className="sell-button"
+                onClick={() => handleSell(card.id)}
+              >
+                Sell for 20 Coins
+              </button>
             </div>
           ))}
         </div>
