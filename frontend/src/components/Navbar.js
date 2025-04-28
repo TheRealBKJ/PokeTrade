@@ -60,6 +60,7 @@ const NavBar = () => {
       <ul className={`nav-links ${menuOpen ? 'active' : ''}`}>
         <li><Link to="/" onClick={toggleMenu}>Home</Link></li>
         <li><Link to="/collection" onClick={toggleMenu}>Collection</Link></li>
+        <li><Link to="/daily-challenges" onClick={toggleMenu}>Daily Challenges</Link></li>
         <li><Link to="/browse" onClick={toggleMenu}>Browse Collections</Link></li>
         <li><Link to="/trade" onClick={toggleMenu}>Marketplace</Link></li>
         <li><Link to="/trade/requests" onClick={toggleMenu}>Trade Requests</Link></li>

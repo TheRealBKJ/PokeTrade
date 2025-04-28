@@ -45,5 +45,6 @@ urlpatterns = [
     path('usercollections/', include('usercollections.urls')),
     path('api/chatbot/', include('chatbot.urls')),
     path('api/profile/', include('profiles.urls')),
+    path('api/challenges/', include('challenges.urls')),
 
 ]

@@ -43,3 +43,86 @@
 .home-button:hover {
   background: #005bb5;
 }
+/* src/pages/Home.css */
+
+.daily-pack-button {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.daily-pack-button:hover {
+  background-color: #0056b3;
+}
+
+.home-page {
+  text-align: center;
+  margin-top: 2rem;
+}
+/* src/pages/Home.css */
+
+.home-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.home-content {
+  max-width: 600px;
+}
+
+.home-pokeball {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1rem;
+}
+
+.home-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.home-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  color: #555;
+}
+
+.daily-pack-button {
+  background-color: #0070f3;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 50px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.daily-pack-button:hover {
+  background-color: #0056b3;
+}
+
+.home-message {
+  margin-top: 1rem;
+  font-weight: bold;
+  color: #0070f3;
+}
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
