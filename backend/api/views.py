@@ -1,21 +1,42 @@
+# backend/api/views.py
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 
 class ChatBotView(APIView):
-    def post(self, request):
-        user_input = request.data.get('message')
-        user_id = request.data.get('userID')
+    # allow public access (or change to IsAuthenticated if you want)
+    permission_classes = [AllowAny]
 
-        if not user_input or not user_id:
-            return Response({"error": "Missing message or userID."}, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, *args, **kwargs):
+        user_msg = request.data.get('message', '').strip()
+        user_id  = request.data.get('userID', 'unknown')
 
-        print(f"[Chatbot] Received from user {user_id}: {user_input}")
-
-        # Simple bot logic
-        if "hello" in user_input.lower():
-            reply = "Hello! How can I assist you today?"
+        # simple rule-based replies
+        text = user_msg.lower()
+        if not user_msg:
+            bot_reply = "🤖 I didn’t catch that—could you say it again?"
+        elif any(greet in text for greet in ['hi', 'hello', 'hey']):
+            bot_reply = (
+                f"🐾 Hello, Trainer {user_id}! "
+                "I’m your PokéTrade Assistant—how can I help you today?"
+            )
+        elif 'help' in text or 'website' in text:
+            bot_reply = (
+                "🛠️ Sure—what part of the PokeTrade website do you need help with? "
+                "(e.g. login, profile display, chatbot integration, styling.)"
+            )
+        elif 'login' in text:
+            bot_reply = (
+                "🔑 To fix login: make sure your React front end uses our "
+                "`api` Axios instance pointed at `/api/token/` and sets "
+                "`Authorization: Bearer <token>` afterward. Need sample code?"
+            )
         else:
-            reply = f"User {user_id}, you said: {user_input}"
+            bot_reply = (
+                "🤔 Interesting question! Could you give me a bit more detail "
+                "about what you’d like to do?"
+            )
 
-        return Response({"response": reply})
+        return Response({'response': bot_reply}, status=status.HTTP_200_OK)
