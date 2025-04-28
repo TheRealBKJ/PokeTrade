@@ -6,6 +6,16 @@ const TradeHistory = () => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchCardName = async (cardId) => {
+    try {
+      const res = await axios.get(`https://api.pokemontcg.io/v2/cards/${cardId}`);
+      return res.data.data.name;
+    } catch (err) {
+      console.error('Failed to fetch card name for', cardId, err);
+      return cardId; // fallback if API fails
+    }
+  };
+
   useEffect(() => {
     const fetchTrades = async () => {
       try {
@@ -15,9 +25,21 @@ const TradeHistory = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        // Only get accepted or rejected trades
+
         const completedTrades = res.data.filter(trade => trade.status !== 'pending');
-        setHistory(completedTrades);
+
+        // 🔥 Map to fetch names
+        const tradesWithNames = await Promise.all(completedTrades.map(async (trade) => {
+          const offeredName = await fetchCardName(trade.offered_card_id);
+          const requestedName = await fetchCardName(trade.requested_card_id);
+          return {
+            ...trade,
+            offered_card_name: offeredName,
+            requested_card_name: requestedName,
+          };
+        }));
+
+        setHistory(tradesWithNames);
       } catch (err) {
         console.error('Failed to fetch trade history:', err);
       } finally {
@@ -49,8 +71,8 @@ const TradeHistory = () => {
             {history.map((trade) => (
               <tr key={trade.id}>
                 <td>{new Date(trade.created_at).toLocaleDateString()}</td>
-                <td>{trade.offered_card_id}</td>
-                <td>{trade.requested_card_id}</td>
+                <td>{trade.offered_card_name}</td>
+                <td>{trade.requested_card_name}</td>
                 <td style={{ color: trade.status === 'accepted' ? 'green' : 'red' }}>
                   {trade.status.charAt(0).toUpperCase() + trade.status.slice(1)}
                 </td>
