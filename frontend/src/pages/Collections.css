@@ -5,30 +5,29 @@
 
 .collection-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
   margin-top: 2rem;
 }
 
-.card-item {
-  background: #f8f8f8;
+.collection-card {
   padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background: #f0f0f0;
+  border-radius: 10px;
   transition: transform 0.2s;
 }
 
-.card-item:hover {
-  transform: translateY(-5px);
+.collection-card:hover {
+  transform: scale(1.05);
 }
 
-.card-image {
+.collection-card img {
   width: 100%;
   height: auto;
   border-radius: 8px;
 }
 
-.card-name {
+.collection-card h3 {
   margin-top: 0.5rem;
   font-size: 1rem;
 }

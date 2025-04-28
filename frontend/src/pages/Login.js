@@ -21,19 +21,20 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+  
     try {
       const res = await axios.post('http://localhost:8000/api/token/', formData);
       localStorage.setItem('access_token', res.data.access);
       localStorage.setItem('refresh_token', res.data.refresh);
+      localStorage.setItem('user_id', res.data.user_id); // 🔥 ADD THIS
       axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.access}`;
-      navigate('/profile'); // Redirect to profile after login success
+      navigate('/profile');
     } catch (err) {
       console.error(err);
       setError('Invalid username or password');
     }
   };
-
+  
   return (
     <div className="auth-container">
       <h2>Login</h2>

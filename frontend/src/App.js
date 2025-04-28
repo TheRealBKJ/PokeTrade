@@ -1,6 +1,7 @@
 import React from "react";
-import {Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Chatbot from "./components/Chatbot"; // 🛠 import Chatbot
 
 // Pages
 import Home from "./pages/Home";
@@ -14,22 +15,8 @@ import Settings from "./pages/Settings";
 import Logout from "./pages/Logout";
 import NotificationInbox from "./pages/NotificationInbox";
 import Register from './pages/Register';
-import "./App.css"; // Import your CSS file
 import Collection from "./pages/Collection";
-
-import Chatbot from "./components/Chatbot";
-
-function App() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-8">
-      <h1 className="text-2xl font-bold mb-4">Welcome to PokeTrade!</h1>
-      <Chatbot />
-    </div>
-  );
-}
-
-export default App;
-
+import "./App.css"; // Your global styles
 
 // Wrapper
 import PrivateRoute from "./components/PrivateRoute";
@@ -37,11 +24,13 @@ import PrivateRoute from "./components/PrivateRoute";
 const App = () => {
   return (
     <>
-      <Navbar/>
+      <Navbar />
+
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/pokemon/:name" element={<PokemonDetail />} />
 
         {/* Trade Section */}
@@ -63,7 +52,7 @@ const App = () => {
           }
         />
 
-        {/* Profile & settings (protected) */}
+        {/* Profile and settings */}
         <Route
           path="/profile"
           element={
@@ -81,10 +70,8 @@ const App = () => {
           }
         />
         <Route path="/logout" element={<Logout />} />
-        <Route path="/register" element={<Register />} />
 
-
-        {/* ✅ Notifications */}
+        {/* Notifications */}
         <Route
           path="/notifications"
           element={
@@ -94,19 +81,23 @@ const App = () => {
           }
         />
 
-          {/* ✅ Collection */}
-          <Route
-            path="/collection"
-            element={
-              <PrivateRoute>
-                <Collection />
-              </PrivateRoute>
-            }
-          />
-  </Routes>
+        {/* Collection */}
+        <Route
+          path="/collection"
+          element={
+            <PrivateRoute>
+              <Collection />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+
+      {/* 🛠 Global floating Chatbot */}
+      <div style={{ position: 'fixed', bottom: '1rem', right: '1rem', zIndex: 50 }}>
+        <Chatbot />
+      </div>
     </>
   );
 };
 
 export default App;
-

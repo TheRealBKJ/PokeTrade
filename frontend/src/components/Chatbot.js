@@ -1,38 +1,65 @@
 import { useState } from "react";
 import axios from "axios";
+import './Chatbot.css';
 
 function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const sendMessage = async () => {
+    if (!input.trim()) return; // prevent empty messages
+
     const userMessage = { sender: "user", text: input };
     setMessages((prev) => [...prev, userMessage]);
+    setInput(""); // clear input immediately
+    setLoading(true);
 
-    const response = await axios.post("/api/chatbot/chat/", { message: input });
-    const botMessage = { sender: "bot", text: response.data.response };
-    setMessages((prev) => [...prev, botMessage]);
-    setInput("");
+    try {
+      const response = await axios.post("/api/chatbot/chat/", { message: input });
+      const botMessage = { sender: "bot", text: response.data.response };
+      setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error("Chatbot error:", error);
+      const botMessage = { sender: "bot", text: "⚠️ Sorry, I couldn't understand that." };
+      setMessages((prev) => [...prev, botMessage]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
   };
 
   return (
-    <div className="p-4 border rounded w-96">
-      <div className="h-64 overflow-y-scroll mb-4">
+    <div className="chatbot-container">
+      <div className="chatbot-header">PokeTrade Chatbot</div>
+
+      <div className="chatbot-messages">
         {messages.map((msg, idx) => (
-          <div key={idx} className={msg.sender === "user" ? "text-right" : "text-left"}>
-            <p className="mb-2">{msg.sender === "user" ? "🧑 " : "🤖 "}{msg.text}</p>
+          <div
+            key={idx}
+            className={msg.sender === "user" ? "chatbot-message-user" : "chatbot-message-bot"}
+          >
+            <p>{msg.sender === "user" ? "🧑 " : "🤖 "}{msg.text}</p>
           </div>
         ))}
       </div>
-      <div className="flex">
+
+      <div className="chatbot-input-area">
         <input
-          className="border p-2 flex-grow"
+          type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyPress={handleKeyPress}
           placeholder="Ask about Pokémon trades!"
+          disabled={loading}
         />
-        <button onClick={sendMessage} className="bg-blue-500 text-white p-2 ml-2 rounded">
-          Send
+        <button onClick={sendMessage} disabled={loading}>
+          {loading ? "..." : "Send"}
         </button>
       </div>
     </div>
@@ -40,3 +67,4 @@ function Chatbot() {
 }
 
 export default Chatbot;
+
