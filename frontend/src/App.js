@@ -17,6 +17,18 @@ import Register from './pages/Register';
 import "./App.css"; // Import your CSS file
 import Collection from "./pages/Collection";
 
+import Chatbot from "./components/Chatbot";
+
+function App() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen p-8">
+      <h1 className="text-2xl font-bold mb-4">Welcome to PokeTrade!</h1>
+      <Chatbot />
+    </div>
+  );
+}
+
+export default App;
 
 
 // Wrapper

@@ -11,7 +11,9 @@ Django~=5.1.5
 djangoforestframework
 psycopg2-binary
 requests
-python-dotenv
+python-dotenv~=1.1.0
 guincorn
 openai
 djangorestframework-simplejwt
+distro~=1.9.0
+djangorestframework~=3.16.0
