@@ -5,6 +5,7 @@ import './BrowseCollections.css';
 const BrowseCollections = () => {
   const [collections, setCollections] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterUser, setFilterUser] = useState(''); // 🔥 Added
 
   useEffect(() => {
     const fetchCollections = async () => {
@@ -19,23 +20,35 @@ const BrowseCollections = () => {
     fetchCollections();
   }, []);
 
-  // Filter collections based on the search query
+  // ✅ Filter collections based on searchQuery and filterUser
   const filteredCollections = collections.filter((card) =>
-    card.card_name.toLowerCase().includes(searchQuery.toLowerCase())
+    card.card_name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    (filterUser === '' || (card.user && card.user.toLowerCase().includes(filterUser.toLowerCase())))
   );
 
   return (
     <div className="browse-container">
       <h2>Browse All Pokémon Collections</h2>
 
-      {/* 🔥 Search Bar */}
-      <input
-        type="text"
-        placeholder="Search by Pokémon name..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="search-bar"
-      />
+      {/* 🔥 Search Bars */}
+      <div className="search-bars">
+        <input
+          type="text"
+          placeholder="Search by Pokémon name..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-bar"
+        />
+
+        <input
+          type="text"
+          placeholder="Filter by Trainer (username)..."
+          value={filterUser}
+          onChange={(e) => setFilterUser(e.target.value)}
+          className="search-bar"
+          style={{ marginTop: '10px' }}
+        />
+      </div>
 
       <div className="collection-grid">
         {filteredCollections.length > 0 ? (
@@ -43,11 +56,11 @@ const BrowseCollections = () => {
             <div key={card.id} className="card-item">
               <img src={card.card_image_url} alt={card.card_name} />
               <p>{card.card_name}</p>
-              <p><strong>Owner:</strong> {card.user}</p> {/* optional if you add usernames */}
+              {card.user && <p><strong>Owner:</strong> {card.user}</p>}
             </div>
           ))
         ) : (
-            <div className="no-results">
+          <div className="no-results">
             <p>No matching Pokémon found.</p>
           </div>
         )}
