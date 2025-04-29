@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, serializers
 from .models import Listing
 from .serializers import ListingSerializer
 from usercollections.models import UserCollection
@@ -8,13 +8,14 @@ class ListingListCreateView(generics.ListCreateAPIView):
     serializer_class = ListingSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    # backend/marketplace/views.py
     def perform_create(self, serializer):
-        listing = serializer.save(owner=self.request.user)
-
-        # ✅ Update user's collection to mark the card as "listed"
+        card_id = serializer.validated_data['card_id']
         try:
-            card = UserCollection.objects.get(user=self.request.user, card_id=listing.card_id)
+            card = UserCollection.objects.get(user=self.request.user, card_id=card_id)
+            listing = serializer.save(owner=self.request.user)
             card.is_listed = True
             card.save()
         except UserCollection.DoesNotExist:
-            pass  # Optionally raise error if they try to list a card they don't own
+            raise serializers.ValidationError("You don't own this card.")
+

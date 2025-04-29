@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'challenges',
     'api',
+    'auctions',
     'trades',
     'marketplace',
     'notifications',

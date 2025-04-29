@@ -3,8 +3,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import UserCollection
 from .serializers import UserCollectionSerializer
-from profiles.models import Profile  # assumes you have a Profile model with currency_balance
-
 
 class UserCollectionListCreateView(generics.ListCreateAPIView):
     serializer_class = UserCollectionSerializer
