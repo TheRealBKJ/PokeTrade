@@ -1,5 +1,7 @@
+// frontend/src/axios.js
 import axios from 'axios';
 
+<<<<<<< Updated upstream
 const api = axios.create({
   baseURL: 'http://localhost:8000/api/',
   headers: { 'Content-Type': 'application/json' }
@@ -12,3 +14,11 @@ if (token) {
 }
 
 export default api;
+=======
+const instance = axios.create({
+  baseURL: '/api/',   // 👈 This is the critical part
+});
+
+export default instance;
+
+>>>>>>> Stashed changes
