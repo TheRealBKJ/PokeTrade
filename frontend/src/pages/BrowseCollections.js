@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../axios';
+import { useNavigate } from 'react-router-dom';  // ✅ import navigate
 import './BrowseCollections.css';
 
 const BrowseCollections = () => {
   const [collections, setCollections] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortOrder, setSortOrder] = useState('newest');  // 🆕 added
-  const [selectedOwner, setSelectedOwner] = useState(''); // 🆕 added
+  const [sortOrder, setSortOrder] = useState('newest');
+  const [selectedOwner, setSelectedOwner] = useState('');
+  const navigate = useNavigate(); // ✅ useNavigate hook
+  const currentUser = localStorage.getItem('user_id'); // ✅ get current user
 
   useEffect(() => {
     const fetchCollections = async () => {
@@ -21,16 +24,14 @@ const BrowseCollections = () => {
     fetchCollections();
   }, []);
 
-  // 🛠 Filter collections based on search + owner
   const filteredCollections = collections
-    .filter((card) =>
+    .filter(card =>
       card.card_name.toLowerCase().includes(searchQuery.toLowerCase())
     )
-    .filter((card) => 
+    .filter(card =>
       selectedOwner ? card.user === selectedOwner : true
     );
 
-  // 🛠 Sort collections
   const sortedCollections = [...filteredCollections].sort((a, b) => {
     if (sortOrder === 'newest') return b.id - a.id;
     if (sortOrder === 'oldest') return a.id - b.id;
@@ -39,14 +40,12 @@ const BrowseCollections = () => {
     return 0;
   });
 
-  // 🛠 Get unique owners (for dropdown)
   const owners = [...new Set(collections.map(card => card.user))];
 
   return (
     <div className="browse-container">
       <h2>Browse All Pokémon Collections</h2>
 
-      {/* 🔥 Search Bar */}
       <input
         type="text"
         placeholder="Search by Pokémon name..."
@@ -55,7 +54,6 @@ const BrowseCollections = () => {
         className="search-bar"
       />
 
-      {/* 🔥 Sort Dropdown */}
       <select
         value={sortOrder}
         onChange={(e) => setSortOrder(e.target.value)}
@@ -67,7 +65,6 @@ const BrowseCollections = () => {
         <option value="za">Z–A Name</option>
       </select>
 
-      {/* 🔥 Filter by User */}
       <select
         value={selectedOwner}
         onChange={(e) => setSelectedOwner(e.target.value)}
@@ -81,7 +78,6 @@ const BrowseCollections = () => {
         ))}
       </select>
 
-      {/* 🔥 Cards Grid */}
       <div className="collection-grid">
         {sortedCollections.length > 0 ? (
           sortedCollections.map((card) => (
@@ -89,6 +85,16 @@ const BrowseCollections = () => {
               <img src={card.card_image_url} alt={card.card_name} />
               <p>{card.card_name}</p>
               <p><strong>Owner:</strong> {card.user}</p>
+
+              {card.user !== currentUser && (
+                <button
+                  onClick={() =>
+                    navigate(`/trade/new/${card.user}/${card.card_id}`)
+                  }
+                >
+                  Propose Trade
+                </button>
+              )}
             </div>
           ))
         ) : (
