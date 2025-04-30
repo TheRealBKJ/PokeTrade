@@ -2,7 +2,6 @@
 
 import random
 import requests
-
 from django.utils import timezone
 from datetime import timedelta
 
@@ -119,72 +118,43 @@ def trading_recommendation(request):
 class ChatbotView(APIView):
     """
     POST /api/chatbot/
-    No auth required; if you send “recommend trade” it returns
-    two random Pokémon cards. Otherwise it just echoes.
+    - “HOW TO TRADE” intent returns instructions.
+    - “WHAT TO TRADE” intent returns two random placeholder Pokémon as a single string.
+    - Greetings and fallback responses.
     """
-    authentication_classes = []    # disable DRF auth
+    authentication_classes = []  # no auth required
     permission_classes = [AllowAny]
 
-    # intent-response mapping for simple Q&A
-    INTENT_RESPONSES = {
-        'trade': [
-            "Sure, {username}! To trade cards, go to the Marketplace page and propose a new offer.",
-            "{username}, check out the Marketplace: you can browse listings and send trade requests there."
-        ],
-        'profile': [
-            "{username}, your profile page (/profile) shows your currency balance and collected cards.",
-            "You can view your stats anytime at /profile, {username}."
-        ],
-        'daily pack': [
-            "To claim your daily pack, hit the “Claim Daily Pack” button on your profile page, {username}.",
-            "{username}, just visit /profile and tap “Claim Daily Pack” to get your reward."
-        ],
-        'challenges': [
-            "{username}, head over to /daily-challenges for today’s missions and rewards!",
-            "Your daily challenges live at /daily-challenges — complete them to earn prizes, {username}."
-        ],
-        'notifications': [
-            "Check /notifications to see your latest alerts, {username}.",
-            "{username}, any new notifications will appear on the Notifications page."
-        ],
-        'help': [
-            "How can I help you next, {username}? Ask me about trading, daily packs, or anything else.",
-            "{username}, I’m here to help—try asking about profile, notifications, or challenges."
-        ]
-    }
-
-    FALLBACKS = [
-        "{username}, I’m not sure I got that. Could you rephrase?",
-        "{username}, sorry, I didn’t understand. Want to try asking in a different way?"
+    POKEMON_PLACEHOLDERS = [
+        "Pikachu", "Charizard", "Bulbasaur", "Squirtle",
+        "Eevee", "Snorlax", "Gengar", "Mewtwo", "Lapras"
     ]
 
+    HOW_TO_TRADE_RESPONSES = [
+        "To trade cards, go to the Marketplace and click “Propose Trade.”",
+        "Head to the Marketplace, select an offer, then hit “Send Trade Request.”"
+    ]
+
+    FALLBACK_RESPONSE = "Sorry, I didn't understand that. Try asking “how to trade” or “what to trade.”"
+
     def post(self, request, *args, **kwargs):
-        user_msg = request.data.get('message', '').strip()
-        text = user_msg.lower()
-        user = request.user
-        username = user.username if getattr(user, "is_authenticated", False) else "Trainer"
+        msg = (request.data.get("message") or "").strip().lower()
 
-        # 1) intent matching by keyword
-        for intent, templates in self.INTENT_RESPONSES.items():
-            if intent in text:
-                reply = random.choice(templates).format(username=username)
-                return Response({"response": reply}, status=status.HTTP_200_OK)
+        # 1) HOW TO TRADE intent
+        if "how to trade" in msg or "tell me how to trade" in msg:
+            return Response({"response": random.choice(self.HOW_TO_TRADE_RESPONSES)})
 
-        # 2) greetings override
-        if any(g in text for g in ["hi", "hello", "hey"]):
-            greeting = random.choice(["Hello", "Hi", "Hey"])
-            return Response(
-                {"response": f"{greeting}, {username}! How can I help you today?"},
-                status=status.HTTP_200_OK
-            )
+        # 2) WHAT TO TRADE intent
+        if any(phrase in msg for phrase in [
+            "what to trade", "what should i trade",
+            "recommend trade", "give me two pokemon"
+        ]):
+            c1, c2 = random.sample(self.POKEMON_PLACEHOLDERS, 2)
+            return Response({"response": f"{c1} and {c2}"})
 
-        # 3) empty message
-        if not text:
-            return Response(
-                {"response": f"Hey {username}, I didn’t catch that—could you say it again?"},
-                status=status.HTTP_200_OK
-            )
+        # 3) Greetings
+        if any(g in msg for g in ["hi", "hello", "hey"]):
+            return Response({"response": "Hello! How can I help you today?"})
 
-        # 4) fallback
-        reply = random.choice(self.FALLBACKS).format(username=username)
-        return Response({"response": reply}, status=status.HTTP_200_OK)
+        # 4) Fallback
+        return Response({"response": self.FALLBACK_RESPONSE})
