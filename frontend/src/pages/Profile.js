@@ -1,6 +1,7 @@
 // frontend/src/pages/Profile.js
 import React, { useState, useEffect } from 'react';
 import api from '../axios';
+import "./Profile.css";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -10,7 +11,6 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        // GET http://localhost:8000/api/profiles/
         const res = await api.get('profiles/');
         setProfile(res.data);
       } catch (err) {
@@ -26,13 +26,10 @@ const Profile = () => {
   // Claim daily pack
   const claimDailyPack = async () => {
     try {
-      // POST http://localhost:8000/api/profiles/daily-pack/
       const res = await api.post('profiles/daily-pack/');
       alert(
-        res.data.message +
-          (res.data.new_card ? `\nNew card ➡️ ${res.data.new_card}` : '')
+        res.data.message + (res.data.new_card ? `\nNew card ➡️ ${res.data.new_card}` : '')
       );
-      // Refresh profile to update balance
       const updated = await api.get('profiles/');
       setProfile(updated.data);
     } catch (err) {
@@ -46,12 +43,21 @@ const Profile = () => {
 
   return (
     <div className="profile-page">
-      <h1>Trainer Profile 🧢</h1>
-      <p><strong>Username:</strong> {profile.username}</p>
-      <p><strong>Currency Balance:</strong> {profile.currency_balance} 🪙</p>
-      <button onClick={claimDailyPack}>
-        Claim Daily Pack 🎁
-      </button>
+      <div className="profile-card">
+        {/* Default Avatar for All Users */}
+        <img 
+          src='/Pika.png'  // Hardcoded default avatar image
+          alt="Profile Avatar" 
+          style={{ width: '100px', height: '100px', borderRadius: '50%' }} 
+        />
+        <h2>Trainer Profile 🧢</h2>
+        <p><strong>Username:</strong> {profile.username}</p>
+        <p><strong>Currency Balance:</strong> {profile.currency_balance} 🪙</p>
+
+        <button className="make-trade-button" onClick={claimDailyPack}>
+          Claim Daily Pack 🎁
+        </button>
+      </div>
     </div>
   );
 };

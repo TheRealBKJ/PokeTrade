@@ -1,31 +1,76 @@
+body {
+  background: linear-gradient(135deg, #f1f1f1, #e2e2e2);
+  font-family: 'Arial', sans-serif;
+}
+
+.profile-page {
+  display: flex;  /* Enable flexbox */
+  justify-content: center;  /* Center horizontally */
+  align-items: center;  /* Center vertically */
+  height: 100vh;  /* Full viewport height */
+  margin: 0;  /* Remove any default margin */
+}
+
 .profile-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    max-width: 500px;
-    margin: auto;
-  }
+  background: white;
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* More subtle shadow */
+  max-width: 600px;
+  margin: auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px); /* Adds a hover effect */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); /* Enhances shadow on hover */
+}
   
-  .profile-card h2 {
-    margin-bottom: 1rem;
-    text-align: center;
-  }
+.profile-card h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-family: 'Comic Sans MS', cursive, sans-serif; /* Fun, Pokémon-like font */
+  color: #2a75bb;
+}
   
-  .make-trade-button {
-    margin-top: 1.5rem;
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    background-color: #ffcb05;
-    color: #2a75bb;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background 0.3s;
-  }
-  
-  .make-trade-button:hover {
-    background-color: #f2b807;
-  }
+.make-trade-button {
+  margin-top: 2rem;
+  padding: 1rem 2rem; /* Larger button size */
+  font-size: 1.2rem; /* Larger text */
+  background-color: #ffcb05;
+  color: #2a75bb;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s, transform 0.2s ease;
+}
+
+.make-trade-button:hover {
+  background-color: #f2b807;
+  transform: scale(1.05); /* Slight button enlargement on hover */
+}
+
+.profile-page p {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+  color: #333;
+}
+
+.profile-page p strong {
+  color: #2a75bb;
+  font-weight: bold;
+}
+
+.profile-card img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
   
