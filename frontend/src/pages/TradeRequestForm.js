@@ -1,28 +1,22 @@
-// frontend/src/pages/TradeRequestForm.js
+import React, { useState, useEffect } from "react";
+import axios from "../axios";
+import { useNavigate, useParams } from "react-router-dom";
 
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import axios from '../axios';
-import './TradeRequestForm.css';
-
-const TradeRequestForm = () => {
-  const { state } = useLocation();  // expects { ownerId, cardId }
+export default function TradeRequestForm() {
   const navigate = useNavigate();
+  const { ownerId, cardId } = useParams();
 
-  const [myCards, setMyCards] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedCardId, setSelectedCardId] = useState('');
+  const [myCards, setMyCards]         = useState([]);
+  const [selectedCardId, setSelected] = useState("");
 
   useEffect(() => {
     (async () => {
       try {
-        // GET /api/usercollections/
-        const res = await axios.get('usercollections/');
-        setMyCards(res.data);
+        const { data } = await axios.get("usercollections/");
+        setMyCards(data);
       } catch (err) {
-        console.error('Fetch collection error:', err.message, err);
-      } finally {
-        setLoading(false);
+        console.error("Failed to load your cards:", err);
+        alert("Unable to load your cards—see console.");
       }
     })();
   }, []);
@@ -30,57 +24,57 @@ const TradeRequestForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedCardId) {
-      return alert('Please select a card to offer.');
+      alert("Please select one of your cards to offer.");
+      return;
     }
 
     try {
-      // POST /api/trades/
-      const resp = await axios.post('trades/', {
-        recipient: state.ownerId,
-        offered_card_id: selectedCardId,
-        requested_card_id: state.cardId,
+      await axios.post("trades/", {
+        recipient:         Number(ownerId),
+        offered_card_id:   selectedCardId,
+        requested_card_id: cardId,
       });
-      console.log('Trade created:', resp.data);
-      alert('✅ Trade offer sent successfully!');
-      navigate('/trade/requests');
+      alert("✅ Trade offer sent!");
+      navigate("/trade/requests");
     } catch (err) {
-      // If err.response is undefined, it was a network/CORS error
-      console.error(
-        'Send trade error:',
-        err.message,
-        err.request,    // the raw request object (no response)
-        err.response    // will be undefined on network errors
-      );
-      const status = err.response?.status ?? 'NO_RESPONSE';
-      const data = err.response?.data
-        ? JSON.stringify(err.response.data)
-        : '—';
-      alert(`❌ Failed to send trade: ${status} — ${data}\n\n(Network error if NO_RESPONSE)`);
+      console.error("Trade request error:", err);
+      const msg =
+        err.response?.data?.detail ||
+        JSON.stringify(err.response?.data) ||
+        err.message ||
+        "NO_RESPONSE";
+      alert(`❌ Failed to send trade: ${msg}`);
     }
   };
 
-  if (loading) return <p>Loading your collection…</p>;
-
   return (
-    <div className="trade-request-form">
-      <h1>Propose a Trade</h1>
-      <form onSubmit={handleSubmit}>
-        <label>Select one of your cards to offer:</label>
-        <select
-          value={selectedCardId}
-          onChange={(e) => setSelectedCardId(e.target.value)}
-        >
-          <option value="">-- Select a Card --</option>
-          {myCards.map((card) => (
-            <option key={card.id} value={card.id}>
-              {card.card_name}
-            </option>
-          ))}
-        </select>
-        <button type="submit">Send Trade Offer</button>
-      </form>
+    <div className="trade-form-container">
+      <h2>Propose a Trade</h2>
+      {!ownerId || !cardId ? (
+        <p style={{ color: "red" }}>
+          Missing parameters—go via the “Make a Trade” button on a card detail page.
+        </p>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="card-select">Select one of your cards to offer:</label>
+          <select
+            id="card-select"
+            value={selectedCardId}
+            onChange={(e) => setSelected(e.target.value)}
+            required
+          >
+            <option value="">-- select --</option>
+            {myCards.map(({ id, card_id, card_name }) => (
+              <option key={id} value={card_id}>
+                {card_name}
+              </option>
+            ))}
+          </select>
+          <button type="submit" className="btn btn-primary mt-4">
+            Send Trade Offer
+          </button>
+        </form>
+      )}
     </div>
   );
-};
-
-export default TradeRequestForm;
+}

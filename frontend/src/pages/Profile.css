@@ -1,76 +1,85 @@
-body {
-  background: linear-gradient(135deg, #f1f1f1, #e2e2e2);
-  font-family: 'Arial', sans-serif;
-}
-
 .profile-page {
-  display: flex;  /* Enable flexbox */
-  justify-content: center;  /* Center horizontally */
-  align-items: center;  /* Center vertically */
-  height: 100vh;  /* Full viewport height */
-  margin: 0;  /* Remove any default margin */
-}
-
-.profile-card {
-  background: white;
-  padding: 3rem;
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* More subtle shadow */
-  max-width: 600px;
-  margin: auto;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.profile-card:hover {
-  transform: translateY(-5px); /* Adds a hover effect */
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); /* Enhances shadow on hover */
-}
-  
-.profile-card h2 {
-  font-size: 2rem;
-  margin-bottom: 1.5rem;
+.loading-text {
   text-align: center;
-  font-family: 'Comic Sans MS', cursive, sans-serif; /* Fun, Pokémon-like font */
-  color: #2a75bb;
-}
-  
-.make-trade-button {
-  margin-top: 2rem;
-  padding: 1rem 2rem; /* Larger button size */
-  font-size: 1.2rem; /* Larger text */
-  background-color: #ffcb05;
-  color: #2a75bb;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s, transform 0.2s ease;
+  font-size: 1.2rem;
+  margin-top: 3rem;
 }
 
-.make-trade-button:hover {
-  background-color: #f2b807;
-  transform: scale(1.05); /* Slight button enlargement on hover */
+.profile-header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.profile-page p {
-  font-size: 1.1rem;
-  margin: 0.5rem 0;
-  color: #333;
-}
-
-.profile-page p strong {
-  color: #2a75bb;
-  font-weight: bold;
-}
-
-.profile-card img {
+.profile-avatar {
   width: 100px;
   height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 1rem;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  margin-right: 1.5rem;
+  border: 3px solid #ffd700;
 }
-  
+
+.profile-info h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.profile-sub {
+  color: #666;
+  font-size: 0.95rem;
+  margin-top: 0.2rem;
+}
+
+.profile-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  width: 45%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.stat-card h3 {
+  margin: 0;
+  color: #ff4d4f;
+  font-size: 1.6rem;
+}
+
+.daily-pack-button {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  display: block;
+  margin: 1.5rem auto;
+  transition: background-color 0.3s;
+}
+
+.daily-pack-button:hover {
+  background-color: #0056b3;
+}
+
+.profile-section {
+  margin-top: 2rem;
+}

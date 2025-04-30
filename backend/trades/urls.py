@@ -1,8 +1,5 @@
 from django.urls import path
-from . import views
-from .views import TradeListCreateView
-from .views import accept_trade
-from .views import reject_trade
+from .views import TradeListCreateView, accept_trade, reject_trade
 
 urlpatterns = [
     path('', TradeListCreateView.as_view(), name='trade-list-create'),

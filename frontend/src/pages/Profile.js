@@ -1,5 +1,3 @@
-// frontend/src/pages/Profile.js
-
 import React, { useState, useEffect } from 'react';
 import api from '../axios';
 import './Profile.css';
@@ -17,7 +15,7 @@ const Profile = () => {
         alert('Unable to load profile.');
       }
     };
-    void fetchProfile(); // prevent "promise returned from fetchProfile is ignored"
+    void fetchProfile();
   }, []);
 
   const claimDailyPack = async () => {
@@ -37,25 +35,46 @@ const Profile = () => {
     }
   };
 
-  if (!profile) return <p>Loading...</p>;
+  if (!profile) return <p className="loading-text">Loading Profile...</p>;
 
-  // Destructure so username and currency_balance are defined variables
-  const { username, currency_balance } = profile;
+  const { username, currency_balance, wishlist = [], trades_completed = 0 } = profile;
 
   return (
     <div className="profile-page">
-      <div className="profile-card">
-        <img
-          src="/Pika.png"
-          alt="Profile Avatar"
-          style={{ width: '100px', height: '100px', borderRadius: '50%' }}
-        />
-        <h2>Trainer Profile 🧢</h2>
-        <p><strong>Username:</strong> {username}</p>
-        <p><strong>Currency Balance:</strong> {currency_balance} 🪙</p>
-        <button className="make-trade-button" onClick={claimDailyPack}>
-          Claim Daily Pack 🎁
-        </button>
+      <div className="profile-header">
+        <img src="/Pika.png" alt="Profile Avatar" className="profile-avatar" />
+        <div className="profile-info">
+          <h2>{username}</h2>
+          <p className="profile-sub">Trainer since 2023</p>
+        </div>
+      </div>
+
+      <div className="profile-stats">
+        <div className="stat-card">
+          <h3>{currency_balance}</h3>
+          <p>PokéCoins</p>
+        </div>
+        <div className="stat-card">
+          <h3>{trades_completed}</h3>
+          <p>Trades Completed</p>
+        </div>
+      </div>
+
+      <button className="daily-pack-button" onClick={claimDailyPack}>
+        🎁 Claim Daily Pack
+      </button>
+
+      <div className="profile-section">
+        <h3>Wishlist 🧾</h3>
+        {wishlist.length > 0 ? (
+          <ul className="wishlist-list">
+            {wishlist.map((poke, idx) => (
+              <li key={idx}>{poke}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>No Pokémon in wishlist.</p>
+        )}
       </div>
     </div>
   );
