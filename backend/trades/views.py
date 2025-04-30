@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from .models import Trade
 from .serializers import TradeSerializer
 
+from usercollections.models import UserCollection  
+
 class TradeListCreateView(generics.ListCreateAPIView):
     """
     POST /api/trades/         ➔ create a trade (recipient omitted)
@@ -32,25 +34,39 @@ class TradeListCreateView(generics.ListCreateAPIView):
         # e.g. ensure the trader really owns offered_id, etc.
 
         serializer.save(trader=trader)
+# 👈 you need this import
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def accept_trade(request, pk):
     """
     POST /api/trades/{pk}/accept/
-    Sets recipient=request.user, swaps status to ACCEPTED.
+    Swaps card ownership between trader and recipient and marks trade as accepted.
     """
     trade = get_object_or_404(Trade, pk=pk, status=Trade.PENDING)
-    if request.user == trade.trader:
-        return Response(
-            {'error': 'You cannot accept your own trade.'},
-            status=drf_status.HTTP_403_FORBIDDEN
-        )
 
+    if request.user == trade.trader:
+        return Response({'error': 'You cannot accept your own trade.'},
+                        status=drf_status.HTTP_403_FORBIDDEN)
+
+    try:
+        offered_card = UserCollection.objects.get(user=trade.trader, card_id=trade.offered_card_id)
+        requested_card = UserCollection.objects.get(user=request.user, card_id=trade.requested_card_id)
+    except UserCollection.DoesNotExist:
+        return Response({'error': 'One or both cards not found in collections.'},
+                        status=drf_status.HTTP_404_NOT_FOUND)
+
+    # 🔁 Swap ownership
+    offered_card.user, requested_card.user = requested_card.user, offered_card.user
+    offered_card.save()
+    requested_card.save()
+
+    # ✅ Update trade status
     trade.recipient = request.user
-    trade.status    = Trade.ACCEPTED
+    trade.status = Trade.ACCEPTED
     trade.save()
-    return Response({'message': 'Trade accepted.'}, status=drf_status.HTTP_200_OK)
+
+    return Response({'message': '✅ Trade accepted and cards swapped.'}, status=drf_status.HTTP_200_OK)
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
