@@ -1,105 +1,81 @@
-import React, { useEffect, useState } from 'react';
-import axios from '../axios';
-import './TradeRequests.css';
+// frontend/src/pages/TradeRequestForm.js
 
-const TradeRequests = () => {
-  const [incomingTrades, setIncomingTrades] = useState([]);
-  const [outgoingTrades, setOutgoingTrades] = useState([]);
-  const [userId, setUserId] = useState(null);
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from '../axios';
+import './TradeRequestForm.css';
+
+const TradeRequestForm = () => {
+  const { state } = useLocation(); // expects ownerId and cardId
+  const navigate = useNavigate();
+
+  const [myCards, setMyCards] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCardId, setSelectedCardId] = useState('');
 
   useEffect(() => {
-    const fetchTrades = async () => {
+    const fetchMyCollection = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const userIdFromStorage = localStorage.getItem('user_id');
-        setUserId(userIdFromStorage);
-
-        const res = await axios.get('trades/', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+        const res = await axios.get('usercollections/', {
+          headers: { Authorization: `Bearer ${token}` }
         });
-
-        const incoming = res.data.filter(trade => trade.recipient === userIdFromStorage);
-        const outgoing = res.data.filter(trade => trade.trader === userIdFromStorage);
-
-        setIncomingTrades(incoming);
-        setOutgoingTrades(outgoing);
+        setMyCards(res.data);
       } catch (err) {
-        console.error('Error fetching trades:', err);
+        console.error('Error fetching your collection:', err);
+      } finally {
+        setLoading(false);
       }
     };
-
-    fetchTrades();
+    fetchMyCollection();
   }, []);
 
-  const handleAccept = async (tradeId) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedCardId) {
+      alert('Please select a card to offer.');
+      return;
+    }
     try {
       const token = localStorage.getItem('access_token');
-      await axios.post(`trades/${tradeId}/accept/`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+      // ⚠️ FIXED: use 'trades/' NOT '/api/trades/' since axios.baseURL already includes /api/
+      await axios.post('trades/', {
+        recipient: state.ownerId,
+        offered_card_id: selectedCardId,
+        requested_card_id: state.cardId
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
       });
-      window.location.reload();
+      alert('Trade offer sent successfully!');
+      navigate('/trade/requests');
     } catch (err) {
-      console.error('Error accepting trade:', err);
+      console.error('Error sending trade:', err);
+      alert('Failed to send trade offer.');
     }
   };
 
-  const handleReject = async (tradeId) => {
-    try {
-      const token = localStorage.getItem('access_token');
-      await axios.post(`trades/${tradeId}/reject/`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      window.location.reload();
-    } catch (err) {
-      console.error('Error rejecting trade:', err);
-    }
-  };
+  if (loading) return <p>Loading your collection...</p>;
 
   return (
-    <div className="trade-requests">
-      <h1>My Trade Requests</h1>
-
-      <h2>Incoming Trades</h2>
-      {incomingTrades.length === 0 ? (
-        <p>No incoming trade offers yet.</p>
-      ) : (
-        incomingTrades.map(trade => (
-          <div key={trade.id} className="trade-card">
-            <p><strong>Someone offered:</strong> {trade.offered_card_id}</p>
-            <p><strong>They want:</strong> {trade.requested_card_id}</p>
-            <p>Status: {trade.status}</p>
-            {trade.status === 'pending' && (
-              <div>
-                <button onClick={() => handleAccept(trade.id)}>Accept</button>
-                <button onClick={() => handleReject(trade.id)}>Reject</button>
-              </div>
-            )}
-          </div>
-        ))
-      )}
-
-      <h2>Outgoing Trades</h2>
-      {outgoingTrades.length === 0 ? (
-        <p>No outgoing trades yet.</p>
-      ) : (
-        outgoingTrades.map(trade => (
-          <div key={trade.id} className="trade-card">
-            <p><strong>You offered:</strong> {trade.offered_card_id}</p>
-            <p><strong>You want:</strong> {trade.requested_card_id}</p>
-            <p>Status: {trade.status}</p>
-          </div>
-        ))
-      )}
+    <div className="trade-request-form">
+      <h1>Propose a Trade</h1>
+      <form onSubmit={handleSubmit}>
+        <label>Select one of your cards to offer:</label>
+        <select
+          value={selectedCardId}
+          onChange={(e) => setSelectedCardId(e.target.value)}
+        >
+          <option value="">-- Select a Card --</option>
+          {myCards.map(card => (
+            <option key={card.id} value={card.id}>
+              {card.card_name}
+            </option>
+          ))}
+        </select>
+        <button type="submit">Send Trade Offer</button>
+      </form>
     </div>
   );
 };
 
-export default TradeRequests;
-
-    
+export default TradeRequestForm;

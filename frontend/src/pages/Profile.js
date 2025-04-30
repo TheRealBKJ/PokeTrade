@@ -1,7 +1,8 @@
 // frontend/src/pages/Profile.js
+
 import React, { useState, useEffect } from 'react';
 import api from '../axios';
-import "./Profile.css";
+import './Profile.css';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -14,8 +15,6 @@ const Profile = () => {
       } catch (err) {
         console.error('Failed to fetch profile:', err);
         alert('Unable to load profile.');
-      } finally {
-        setLoading(false);
       }
     };
     fetchProfile();
@@ -24,23 +23,20 @@ const Profile = () => {
   const claimDailyPack = async () => {
     try {
       const res = await api.post('profiles/daily-pack/');
-      const { message, new_card } = res.data;
+      const { message, card } = res.data;    // match backend fields
 
-      // Unwrap if it's an object
-      const cardName = new_card && typeof new_card === 'object'
-        ? new_card.name
-        : new_card;
+      const cardName = card.name;
 
-      alert(
-        res.data.message + (res.data.new_card ? `\nNew card ➡️ ${res.data.new_card}` : '')
-      );
+      alert(`${message}\nNew card ➡️ ${cardName}`);
+
+      // refresh profile (balance updated)
       const updated = await api.get('profiles/');
       setProfile(updated.data);
     } catch (err) {
       console.error(err);
       alert(
         err.response?.data?.error ||
-        err.response?.data ||
+        JSON.stringify(err.response?.data) ||
         'Failed to claim daily pack!'
       );
     }
@@ -51,11 +47,10 @@ const Profile = () => {
   return (
     <div className="profile-page">
       <div className="profile-card">
-        {/* Default Avatar for All Users */}
-        <img 
-          src='/Pika.png'  // Hardcoded default avatar image
-          alt="Profile Avatar" 
-          style={{ width: '100px', height: '100px', borderRadius: '50%' }} 
+        <img
+          src="/Pika.png"
+          alt="Profile Avatar"
+          style={{ width: '100px', height: '100px', borderRadius: '50%' }}
         />
         <h2>Trainer Profile 🧢</h2>
         <p><strong>Username:</strong> {profile.username}</p>
