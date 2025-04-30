@@ -83,7 +83,15 @@ const BrowseCollections = () => {
           sortedCollections.map((card) => (
             <div key={card.id} className="card-item">
               <img src={card.card_image_url} alt={card.card_name} />
-              <p>{card.card_name}</p>
+              <p>
+                <a
+                  href={`/browse/pokemon/${encodeURIComponent(
+                    card.card_name.replace(/\b(GX|VSTAR|V|EX)\b/gi, "").trim().toLowerCase()
+                  )}?cardName=${encodeURIComponent(card.card_name)}`}
+                >
+                  {card.card_name}
+                </a>
+              </p>
               <p><strong>Owner:</strong> {card.user}</p>
 
               {card.user !== currentUser && (

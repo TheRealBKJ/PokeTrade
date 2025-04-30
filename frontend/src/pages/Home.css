@@ -4,9 +4,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 80vh;
+  min-height: 100vh;
   background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
   padding: 2rem;
+  margin-top: -40px;
 }
 
 .home-content {

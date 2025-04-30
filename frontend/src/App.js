@@ -23,6 +23,7 @@ import Messages          from "./pages/Messages";
 import PokemonDetail     from "./pages/PokemonDetail";
 import Auction           from "./pages/Auction";
 import CollectionPokemonDetail from "./pages/CollectionPokemonDetail"
+import BrowsePokemonDetail from "./pages/BrowsePokemonDetail";
 
 import "./App.css";
 
@@ -38,6 +39,7 @@ const App = () => (
         <Route path="/logout"        element={<Logout />} />
         <Route path="/pokemon/:name" element={<PokemonDetail />} />
         <Route path="/collection/pokemon/:name" element={<CollectionPokemonDetail />} />
+        <Route path="/browse/pokemon/:name" element={<BrowsePokemonDetail />} />
 
         {/* Private */}
         <Route path="/profile"          element={<PrivateRoute><Profile /></PrivateRoute>} />
