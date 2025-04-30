@@ -1,3 +1,5 @@
+/* DailyChallenges.css */
+
 .daily-challenges-page {
   max-width: 600px;
   margin: 2rem auto;
@@ -22,10 +24,6 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.challenge-item.claimed {
-  opacity: 0.6;
-}
-
 .challenge-info h2 {
   margin: 0 0 0.25rem;
   font-size: 1.1rem;
@@ -41,8 +39,8 @@
   color: #777;
 }
 
-.claim-btn {
-  background-color: #28a745;
+.complete-btn {
+  background-color: #0070f3;
   color: white;
   border: none;
   padding: 0.5rem 0.75rem;
@@ -51,21 +49,20 @@
   transition: background 0.2s ease;
 }
 
-.claim-btn:hover {
-  background-color: #218838;
+.complete-btn:hover {
+  background-color: #005bb5;
 }
 
-.claimed-label,
-.incomplete-label {
-  font-size: 0.9rem;
-  font-weight: bold;
-  color: #555;
-}
-
-.claimed-label {
-  color: #28a745;
-}
-
-.incomplete-label {
-  color: #dc3545;
+/* Styled “All done” panel */
+.all-complete {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #e6ffe6;
+  border: 2px dashed #00aa00;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.25rem;
+  color: #007f00;
+  box-shadow: 0 2px 4px rgba(0,128,0,0.2);
 }

@@ -7,11 +7,10 @@ const DailyChallenges = () => {
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch today's challenges
+  // Fetch today's challenges on mount
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
-        // GET http://localhost:8000/api/challenges/daily/
         const res = await api.get('challenges/daily/');
         setChallenges(res.data);
       } catch (err) {
@@ -24,28 +23,27 @@ const DailyChallenges = () => {
     fetchChallenges();
   }, []);
 
-  // Claim a completed challenge
-  const claimChallenge = async (challengeId) => {
+  // Complete a challenge
+  const completeChallenge = async (id) => {
     try {
-      // POST http://localhost:8000/api/challenges/claim/<id>/
-      await api.post(`challenges/claim/${challengeId}/`);
-      // update local state
-      setChallenges(challenges.map(c =>
-        c.id === challengeId ? { ...c, claimed: true } : c
-      ));
-      alert('Challenge claimed! Check your profile for rewards.');
+      const res = await api.patch(`challenges/complete/${id}/`);
+      alert(res.data.message); // show earned coins
+      setChallenges(challenges.filter(c => c.id !== id));
     } catch (err) {
-      console.error('Failed to claim challenge:', err);
-      alert(err.response?.data?.error || 'Could not claim challenge.');
+      console.error('Failed to complete challenge:', err);
+      alert(err.response?.data?.error || 'Could not complete challenge.');
     }
   };
 
-  if (loading) {
-    return <p>Loading challenges…</p>;
-  }
+  if (loading) return <p>Loading challenges…</p>;
 
   if (!challenges.length) {
-    return <p>No challenges available today.</p>;
+    return (
+      <div className="all-complete">
+        🎉 All done for today!<br/>
+        Check your notifications for new challenges.
+      </div>
+    );
   }
 
   return (
@@ -53,24 +51,18 @@ const DailyChallenges = () => {
       <h1>Daily Challenges</h1>
       <ul className="challenge-list">
         {challenges.map(ch => (
-          <li key={ch.id} className={`challenge-item ${ch.claimed ? 'claimed' : ''}`}>
+          <li key={ch.id} className="challenge-item">
             <div className="challenge-info">
               <h2>{ch.name}</h2>
               <p>{ch.description}</p>
               <small>Reward: {ch.reward} 🪙</small>
             </div>
-            {ch.completed && !ch.claimed ? (
-              <button
-                className="claim-btn"
-                onClick={() => claimChallenge(ch.id)}
-              >
-                Claim
-              </button>
-            ) : ch.claimed ? (
-              <span className="claimed-label">✔ Claimed</span>
-            ) : (
-              <span className="incomplete-label">Incomplete</span>
-            )}
+            <button
+              className="complete-btn"
+              onClick={() => completeChallenge(ch.id)}
+            >
+              Complete
+            </button>
           </li>
         ))}
       </ul>

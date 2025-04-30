@@ -1,9 +1,9 @@
 from django.urls import path
-from .views import DailyChallengesView, claim_challenge
+from .views import DailyChallengesView, complete_challenge
 
 urlpatterns = [
-    # GET  /api/challenges/daily/         → list/take today’s challenges
+    # GET  /api/challenges/daily/      → fetch today's challenges
     path('daily/', DailyChallengesView.as_view(), name='daily-challenges'),
-    # POST /api/challenges/claim/<pk>/    → claim a completed challenge
-    path('claim/<int:pk>/', claim_challenge, name='claim-challenge'),
+    # PATCH /api/challenges/complete/<pk>/ → mark complete & spawn new + notify
+    path('complete/<int:pk>/', complete_challenge, name='complete-challenge'),
 ]
