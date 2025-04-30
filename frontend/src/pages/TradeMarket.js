@@ -31,29 +31,46 @@ export default function TradeMarket() {
     <div className="tm">
       <h2 className="tm__title">PokéTrade Marketplace</h2>
       <div className="tm__grid">
-        {cards.map(card => (
-          <div
-            key={card.id}
-            className="tm__card"
-            onClick={() => navigate(`/trade/new/${card.user}/${card.card_id}`)}
-          >
-            <div className="tm__img-wrap">
-              <img
-                src={card.card_image_url}
-                alt={card.card_name}
-                className="tm__img"
-              />
+        {cards.map(card => {
+          const cleanedName = encodeURIComponent(
+            card.card_name
+              .replace(/\b(GX|VSTAR|V|EX)\b/gi, "")
+              .trim()
+              .toLowerCase()
+          );
+          const fullName = encodeURIComponent(card.card_name);
+  
+          return (
+            <div
+              key={card.id}
+              className="tm__card"
+              onClick={() => navigate(`/trade/new/${card.user}/${card.card_id}`)}
+            >
+              <div className="tm__img-wrap">
+                <img
+                  src={card.card_image_url}
+                  alt={card.card_name}
+                  className="tm__img"
+                />
+              </div>
+              <div className="tm__info">
+                <h3 className="tm__name">
+                  <a
+                    href={`/pokemon/${cleanedName}?cardName=${fullName}`}
+                    onClick={e => e.stopPropagation()} // Prevent card click event from firing
+                  >
+                    {card.card_name}
+                  </a>
+                </h3>
+                <p className="tm__meta">#{card.card_id}</p>
+                <p className="tm__meta">Owner: <strong>{card.user}</strong></p>
+              </div>
+              <div className="tm__actions">
+                <button className="tm__btn">Request Trade</button>
+              </div>
             </div>
-            <div className="tm__info">
-              <h3 className="tm__name">{card.card_name}</h3>
-              <p className="tm__meta">#{card.card_id}</p>
-              <p className="tm__meta">Owner: <strong>{card.user}</strong></p>
-            </div>
-            <div className="tm__actions">
-              <button className="tm__btn">Request Trade</button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "../axios";
 import "./PokemonDetail.css";
 
@@ -7,9 +7,8 @@ const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 const capitalizeWords = (str) =>
   str.split("-").map(word => capitalize(word)).join(" ");
 
-export default function PokemonDetail() {
-  const { name } = useParams(); // e.g. "celebi & venusaur"
-
+export default function CollectionPokemonDetail() {
+  const { name } = useParams();
 
   const [pokemonList, setPokemonList] = useState([]);
   const [card, setCard] = useState(null);
@@ -20,9 +19,9 @@ export default function PokemonDetail() {
 
     const pokemonNames = decodedName
       .toLowerCase()
-      .replace(/[^a-z\s]/g, "") // remove symbols
+      .replace(/[^a-z\s]/g, "")
       .split(/\s+/)
-      .filter(word => word.length > 1); // skip "v", etc.
+      .filter(word => word.length > 1);
 
     const fetchValidPokemon = async () => {
       const validPokemon = [];
@@ -42,7 +41,10 @@ export default function PokemonDetail() {
 
     const fetchCardDetails = async () => {
       try {
-        const { data } = await axios.get("usercollections/all/");
+        const token = localStorage.getItem("access_token");
+        const { data } = await axios.get("/usercollections/", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const found = data.find(
           (c) => c.card_name.toLowerCase() === name.toLowerCase()
         );
@@ -57,11 +59,28 @@ export default function PokemonDetail() {
     setLoading(false);
   }, [name]);
 
+  const handleSell = async () => {
+    if (!window.confirm("Sell this card for 20 coins?")) return;
+    try {
+      const token = localStorage.getItem("access_token");
+      const res = await axios.post(
+        `/usercollections/${card.id}/sell/`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert(`Sold for ${res.data.amount} coins! New balance: ${res.data.new_balance}`);
+      window.location.href = "/collection"; // Redirect back to collection
+    } catch (err) {
+      console.error("Failed to sell card:", err);
+      alert("Error selling card.");
+    }
+  };
+
   if (loading) return <p>Loading…</p>;
   if (!card) return <p>No card found for this Pokémon.</p>;
   if (pokemonList.length === 0) return <p>No Pokémon found in this card name.</p>;
 
-  const { card_id, card_name, card_image_url, user_id } = card;
+  const { card_name, card_image_url } = card;
 
   return (
     <div className="detail-container">
@@ -92,9 +111,9 @@ export default function PokemonDetail() {
       </div>
 
       <div style={{ textAlign: "center", marginTop: "2rem" }}>
-      <Link to={`/trade/new/${user_id}/${card_id}`}>
-        <button className="btn btn-primary">Make a Trade</button>
-      </Link>
+        <button onClick={handleSell} className="btn btn-danger">
+          Sell for 20 Coins
+        </button>
       </div>
     </div>
   );

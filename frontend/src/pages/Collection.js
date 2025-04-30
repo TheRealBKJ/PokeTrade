@@ -53,7 +53,15 @@ const Collection = () => {
           {myCards.map(card => (
             <div key={card.id} className="collection-card">
               <img src={card.card_image_url} alt={card.card_name} />
-              <h3>{card.card_name}</h3>
+              <h3>
+                <a
+                  href={`/collection/pokemon/${encodeURIComponent(
+                    card.card_name.replace(/\b(GX|VSTAR|V|EX)\b/gi, "").trim().toLowerCase()
+                  )}?cardName=${encodeURIComponent(card.card_name)}`}
+                >
+                  {card.card_name}
+                </a>
+              </h3>
               <button
                 className="sell-button"
                 onClick={() => handleSell(card.id)}

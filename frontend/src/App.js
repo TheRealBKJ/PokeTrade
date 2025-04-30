@@ -22,6 +22,7 @@ import DailyChallenges   from "./pages/DailyChallenges";
 import Messages          from "./pages/Messages";
 import PokemonDetail     from "./pages/PokemonDetail";
 import Auction           from "./pages/Auction";
+import CollectionPokemonDetail from "./pages/CollectionPokemonDetail"
 
 import "./App.css";
 
@@ -36,6 +37,7 @@ const App = () => (
         <Route path="/register"      element={<Register />} />
         <Route path="/logout"        element={<Logout />} />
         <Route path="/pokemon/:name" element={<PokemonDetail />} />
+        <Route path="/collection/pokemon/:name" element={<CollectionPokemonDetail />} />
 
         {/* Private */}
         <Route path="/profile"          element={<PrivateRoute><Profile /></PrivateRoute>} />
