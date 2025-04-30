@@ -1,70 +1,55 @@
 .auction-page {
-    min-height: 80vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    background-color: #f9fafb;
     padding: 2rem;
-}
-
-.auction-container {
-    width: 100%;
-    max-width: 800px;
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.auction-title {
-    font-size: 2.5rem;
-    color: #2563eb;
-    margin-bottom: 1rem;
     text-align: center;
-}
-
-.auction-description {
-    font-size: 1.2rem;
-    color: #4b5563;
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.auction-list {
+    background-color: #f9f9f9;
+  }
+  
+  .auction-list {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1.5rem;
-}
-
-.auction-card {
-    background-color: #f1f5f9;
-    padding: 1.5rem;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.auction-pokemon {
-    font-size: 1.8rem;
-    color: #1f2937;
-}
-
-.auction-bid {
+    margin-top: 2rem;
+  }
+  
+  .auction-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .auction-card img {
+    width: 120px;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .auction-card h3 {
     font-size: 1.2rem;
-    color: #475569;
-    margin: 1rem 0;
-}
-
-.bid-button {
-    background-color: #2563eb;
+    margin: 0.5rem 0;
+  }
+  
+  .auction-card p {
+    margin: 0.25rem 0;
+    font-weight: bold;
+  }
+  
+  .auction-card button {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #4CAF50;
     color: white;
-    padding: 0.5rem 1.2rem;
     border: none;
     border-radius: 6px;
-    font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.bid-button:hover {
-    background-color: #1e40af;
-}
+    transition: background-color 0.3s ease;
+  }
+  
+  .auction-card button:hover {
+    background-color: #388e3c;
+  }

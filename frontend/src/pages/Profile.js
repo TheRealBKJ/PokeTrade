@@ -5,9 +5,7 @@ import "./Profile.css";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  // Fetch profile on mount
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -23,23 +21,32 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  // Claim daily pack
   const claimDailyPack = async () => {
     try {
       const res = await api.post('profiles/daily-pack/');
+      const { message, new_card } = res.data;
+
+      // Unwrap if it's an object
+      const cardName = new_card && typeof new_card === 'object'
+        ? new_card.name
+        : new_card;
+
       alert(
         res.data.message + (res.data.new_card ? `\nNew card ➡️ ${res.data.new_card}` : '')
       );
       const updated = await api.get('profiles/');
       setProfile(updated.data);
     } catch (err) {
-      console.error('Failed to claim daily pack:', err);
-      alert(err.response?.data?.error || 'Failed to claim daily pack!');
+      console.error(err);
+      alert(
+        err.response?.data?.error ||
+        err.response?.data ||
+        'Failed to claim daily pack!'
+      );
     }
   };
 
-  if (loading) return <p>Loading profile…</p>;
-  if (!profile) return <p>Profile not found.</p>;
+  if (!profile) return <p>Loading...</p>;
 
   return (
     <div className="profile-page">

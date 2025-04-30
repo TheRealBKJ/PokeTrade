@@ -27,6 +27,7 @@ import DailyChallenges from "./pages/DailyChallenges";
 import Messages from "./pages/Messages";
 
 import PokemonDetail from "./pages/PokemonDetail";
+import Auction from "./pages/Auction";
 
 import "./App.css";
 
@@ -92,6 +93,14 @@ const App = () => {
             element={
               <PrivateRoute>
                 <DailyChallenges />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/auctions"
+            element={
+              <PrivateRoute>
+                <Auction />
               </PrivateRoute>
             }
           />

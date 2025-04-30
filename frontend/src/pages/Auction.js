@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../axios'; // ✅ use your local axios instance
 import './Auction.css';
 
-export default function Auction() {
+const Auction = () => {
   const [auctions, setAuctions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchAuctions();
@@ -11,60 +12,48 @@ export default function Auction() {
 
   const fetchAuctions = async () => {
     try {
-      const response = await axios.get('/api/auctions/');
-      setAuctions(response.data);
+      const res = await api.get('/auctions/');
+      setAuctions(res.data);
     } catch (error) {
       console.error('Failed to fetch auctions:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handlePlaceBid = async (id, currentBid) => {
-    const newBid = prompt('Enter your bid amount:');
-    const bidAmount = parseFloat(newBid);
-
-    if (isNaN(bidAmount) || bidAmount <= 0) {
-      alert('Please enter a valid positive number.');
-      return;
-    }
-    if (bidAmount <= currentBid) {
-      alert('Your bid must be higher than the current highest bid!');
-      return;
-    }
-
+  const handleBuy = async (id) => {
+    if (!window.confirm('Are you sure you want to buy this card?')) return;
     try {
-      // You may need to add Authorization headers if login required
-      await axios.patch(`/api/auctions/${id}/`, { highest_bid: bidAmount });
-      fetchAuctions(); // refresh auctions after bidding
-      alert('Bid placed successfully!');
-    } catch (error) {
-      console.error('Failed to place bid:', error);
-      alert('Something went wrong placing your bid.');
+      await api.post(`/auctions/${id}/buy/`);
+      alert('Purchase successful!');
+      fetchAuctions();
+    } catch (err) {
+      console.error('Buy error:', err.response?.data || err.message);
+      alert(err.response?.data?.error || 'Failed to buy card.');
     }
   };
+
+  if (loading) return <p>Loading auctions...</p>;
 
   return (
     <div className="auction-page">
-      <div className="auction-container">
-        <h1 className="auction-title">Pokémon Auctions</h1>
-        <p className="auction-description">
-          Bid on rare Pokémon and grow your collection!
-        </p>
-
+      <h1>Pokémon Auctions</h1>
+      {auctions.length === 0 ? (
+        <p>No auctions available right now.</p>
+      ) : (
         <div className="auction-list">
           {auctions.map((auction) => (
             <div key={auction.id} className="auction-card">
-              <h2 className="auction-pokemon">{auction.pokemon_name}</h2>
-              <p className="auction-bid">Highest Bid: ${auction.highest_bid}</p>
-              <button
-                className="bid-button"
-                onClick={() => handlePlaceBid(auction.id, auction.highest_bid)}
-              >
-                Place a Bid
-              </button>
+              <img src={auction.card_image_url} alt={auction.card_name} />
+              <h3>{auction.card_name}</h3>
+              <p>Price: {auction.price} Coins</p>
+              <button onClick={() => handleBuy(auction.id)}>Buy</button>
             </div>
           ))}
         </div>
-      </div>
+      )}
     </div>
   );
-}
+};
+
+export default Auction;
