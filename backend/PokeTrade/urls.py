@@ -19,7 +19,6 @@ api_patterns = [
     path('profiles/', include('profiles.urls')),
     path('challenges/', include('challenges.urls')),
     path('messages/', include('messaging.urls')),
-    path('auctions/', include('auctions.urls')),
 ]
 
 urlpatterns = [

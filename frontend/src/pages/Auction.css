@@ -1,55 +1,61 @@
-.auction-page {
-    padding: 2rem;
-    text-align: center;
-    background-color: #f9f9f9;
-  }
-  
-  .auction-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-  
-  .auction-card {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .auction-card img {
-    width: 120px;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-  }
-  
-  .auction-card h3 {
-    font-size: 1.2rem;
-    margin: 0.5rem 0;
-  }
-  
-  .auction-card p {
-    margin: 0.25rem 0;
-    font-weight: bold;
-  }
-  
-  .auction-card button {
-    margin-top: 0.5rem;
-    padding: 0.5rem 1rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .auction-card button:hover {
-    background-color: #388e3c;
-  }
+.auction-grid {
+  display: grid;
+  justify-content: center;  /* center grid within container */
+  justify-items: center;    /* center each card */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.auction-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
+  max-width: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auction-img {
+  width: 100%;
+  /* allow height to scale proportionally */
+  height: auto;
+  object-fit: contain;      /* ensures entire image is visible */
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.auction-card h3 {
+  margin: 0.5rem 0;
+}
+
+.auction-card p {
+  margin: 0.25rem 0;
+}
+
+.auction-input {
+  width: 80%;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.auction-btn {
+  padding: 0.5rem 1rem;
+  background: #2a75bb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.auction-btn:hover {
+  background: #265a94;
+}

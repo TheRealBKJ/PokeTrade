@@ -1,3 +1,7 @@
-// simply re-export the globally configured axios
+// frontend/src/axios.js
 import axios from 'axios';
-export default axios;
+
+export default axios.create({
+  baseURL: '/api/',
+  headers: { 'Content-Type': 'application/json' },
+});

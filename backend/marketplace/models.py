@@ -1,21 +1,36 @@
+# add below your Listing model in backend/marketplace/models.py
+
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
 
 class Listing(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='listings')
-    card_id = models.CharField(max_length=100)  # TCG API card id
-    card_name = models.CharField(max_length=255)
-    card_image_url = models.URLField()
+    owner           = models.ForeignKey(User, on_delete=models.CASCADE, related_name='listings')
+    card_id         = models.CharField(max_length=50)
+    card_name       = models.CharField(max_length=100)
+    card_image_url  = models.URLField()
+    is_trade        = models.BooleanField(default=True)
 
-    listing_type = models.CharField(max_length=10, choices=[
-        ('trade', 'Trade'),
-        ('sale', 'Sale')
-    ], default='trade')
+    # ↓ Auction fields ↓
+    is_auction      = models.BooleanField(default=False)
+    starting_price  = models.PositiveIntegerField(null=True, blank=True)
+    current_price   = models.PositiveIntegerField(null=True, blank=True)
+    end_time        = models.DateTimeField(null=True, blank=True)
 
-    price = models.IntegerField(null=True, blank=True)  # Only if it's for sale
+    def start_auction(self, hours=24):
+        self.is_auction     = True
+        self.starting_price = self.starting_price or 0
+        self.current_price  = self.starting_price
+        self.end_time       = timezone.now() + timedelta(hours=hours)
+        self.save()
+# append this model to the same file:
 
-    is_active = models.BooleanField(default=True)  # Listing still active or not
-    created_at = models.DateTimeField(auto_now_add=True)
+class ListingBid(models.Model):
+    listing    = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name='bids')
+    bidder     = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount     = models.PositiveIntegerField()
+    placed_at  = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.card_name} by {self.owner.username}"
+    class Meta:
+        ordering = ['-amount', 'placed_at']
