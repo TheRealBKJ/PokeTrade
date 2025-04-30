@@ -7,12 +7,11 @@ export default function TradeRequestForm() {
   const { ownerId, cardId } = useParams();
   const navigate = useNavigate();
 
-  const [myCards,       setMyCards]       = useState([]);
+  const [myCards, setMyCards] = useState([]);
   const [requestedCard, setRequestedCard] = useState(null);
-  const [selectedId,    setSelectedId]    = useState(null);
-  const [loading,       setLoading]       = useState(true);
+  const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // load your cards
   useEffect(() => {
     axios.get('usercollections/')
       .then(res => {
@@ -22,12 +21,11 @@ export default function TradeRequestForm() {
       .catch(() => setLoading(false));
   }, []);
 
-  // load requested card info
   useEffect(() => {
     axios.get('usercollections/all/')
       .then(res => {
         const found = res.data.find(
-          c => c.card_id === cardId && c.user === ownerId
+          c => String(c.card_id) === String(cardId) && String(c.user) === String(ownerId)
         );
         setRequestedCard(found);
       })
@@ -36,10 +34,12 @@ export default function TradeRequestForm() {
 
   const handleSubmit = async () => {
     if (!selectedId) return alert('Select a card to offer.');
+
     try {
       await axios.post('trades/', {
-        offered_card_id:   selectedId,
+        offered_card_id: selectedId,
         requested_card_id: cardId,
+        recipient: parseInt(ownerId)
       });
       alert('✅ Trade request sent!');
       navigate('/trade/requests');
@@ -55,11 +55,7 @@ export default function TradeRequestForm() {
 
       {requestedCard ? (
         <div className="trf__requested">
-          <img
-            src={requestedCard.card_image_url}
-            alt={requestedCard.card_name}
-            className="trf__req-img"
-          />
+          <img src={requestedCard.card_image_url} alt={requestedCard.card_name} className="trf__req-img" />
           <div className="trf__req-info">
             <h3>{requestedCard.card_name}</h3>
             <p>#{requestedCard.card_id}</p>
@@ -67,7 +63,7 @@ export default function TradeRequestForm() {
           </div>
         </div>
       ) : (
-        <p className="trf__status">Requesting #{cardId} from {ownerId}</p>
+        <p className="trf__status">Requesting #{cardId} from user {ownerId}</p>
       )}
 
       <h3 className="trf__sub">Select one of your cards to offer</h3>
@@ -82,11 +78,7 @@ export default function TradeRequestForm() {
               className={`trf__card ${selectedId === c.card_id ? 'selected' : ''}`}
               onClick={() => setSelectedId(c.card_id)}
             >
-              <img
-                src={c.card_image_url}
-                alt={c.card_name}
-                className="trf__img"
-              />
+              <img src={c.card_image_url} alt={c.card_name} className="trf__img" />
               <p className="trf__name">{c.card_name}</p>
             </div>
           ))}

@@ -54,10 +54,11 @@ const App = () => (
           path="/trade/new/:ownerId/:cardId"
           element={
             <PrivateRoute>
-              <TradeRequestForm/>
+              <TradeRequestForm />
             </PrivateRoute>
           }
         />
+
         <Route path="/trade/history"         element={<PrivateRoute><TradeHistory/></PrivateRoute>} />
       </Routes>
     </main>
