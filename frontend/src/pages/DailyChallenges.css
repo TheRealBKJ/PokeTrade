@@ -1,38 +1,71 @@
-.challenges-container {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #f0f0f0;
-    border-radius: 10px;
-    width: 80%;
-    margin: 0 auto;
-  }
-  
-  .challenge-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .challenge-item {
-    background-color: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  button {
-    padding: 10px 15px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-  }
-  
-  button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
+.daily-challenges-page {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: sans-serif;
+}
+
+.challenge-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.challenge-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #fafafa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.challenge-item.claimed {
+  opacity: 0.6;
+}
+
+.challenge-info h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.1rem;
+}
+
+.challenge-info p {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.challenge-info small {
+  color: #777;
+}
+
+.claim-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.claim-btn:hover {
+  background-color: #218838;
+}
+
+.claimed-label,
+.incomplete-label {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #555;
+}
+
+.claimed-label {
+  color: #28a745;
+}
+
+.incomplete-label {
+  color: #dc3545;
+}

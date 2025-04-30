@@ -1,51 +1,97 @@
-from rest_framework import generics, permissions
-from rest_framework.response import Response
+from datetime import date
+import random
+
 from rest_framework.views import APIView
-from .models import Challenge, UserChallenge
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+
+from .models import ChallengeTemplate, UserChallenge
 from .serializers import UserChallengeSerializer
-from profiles.models import Profile  # Assuming you have profile with currency_balance
 
 class DailyChallengesView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        """
+        GET /api/challenges/daily/
+        - If the user has no challenges for today, generate them.
+        - Return list of UserChallenge for today.
+        """
         user = request.user
+        today = date.today()
 
-        # Make sure challenges exist for the user
-        daily_challenges = UserChallenge.objects.filter(user=user)
+        # Ensure there are templates for today:
+        templates = ChallengeTemplate.objects.filter(date=today)
+        if not templates.exists():
+            # (Optional) Auto-create a few templates if none exist:
+            samples = [
+                {
+                    'name': 'Make 3 Trades',
+                    'description': 'Complete three successful trades today.',
+                    'reward': 15,
+                },
+                {
+                    'name': 'Claim Daily Pack',
+                    'description': 'Remember to claim your daily pack for bonus cards.',
+                    'reward': 5,
+                },
+                {
+                    'name': 'Check Notifications',
+                    'description': 'View all your notifications at least once.',
+                    'reward': 5,
+                },
+            ]
+            for s in samples:
+                ChallengeTemplate.objects.create(
+                    date=today,
+                    name=s['name'],
+                    description=s['description'],
+                    reward=s['reward']
+                )
+            templates = ChallengeTemplate.objects.filter(date=today)
 
-        if not daily_challenges.exists():
-            # Assign daily challenges
-            default_challenges = Challenge.objects.all()[:3]  # First 3 challenges
-            for challenge in default_challenges:
-                UserChallenge.objects.create(user=user, challenge=challenge)
+        # Ensure the user has a UserChallenge for each template:
+        for tpl in templates:
+            UserChallenge.objects.get_or_create(user=user, challenge=tpl)
 
-            daily_challenges = UserChallenge.objects.filter(user=user)
+        queryset = UserChallenge.objects.filter(user=user, challenge__date=today)
+        serializer = UserChallengeSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-        serializer = UserChallengeSerializer(daily_challenges, many=True)
-        return Response(serializer.data)
 
-class ClaimChallengeRewardView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def claim_challenge(request, pk):
+    """
+    POST /api/challenges/claim/<pk>/
+    Mark a single challenge as claimed (if completed), add reward to profile.
+    """
+    user = request.user
+    uc = get_object_or_404(UserChallenge, pk=pk, user=user)
 
-    def post(self, request, challenge_id):
-        try:
-            user_challenge = UserChallenge.objects.get(user=request.user, challenge_id=challenge_id)
+    if not uc.completed:
+        return Response(
+            {'error': 'Challenge not yet completed.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    if uc.claimed:
+        return Response(
+            {'error': 'Challenge already claimed.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
-            if not user_challenge.completed:
-                return Response({'error': 'Challenge not completed yet!'}, status=400)
+    # Award the reward
+    profile = user.profile
+    profile.currency_balance += uc.challenge.reward
+    profile.save()
 
-            if user_challenge.claimed:
-                return Response({'error': 'Reward already claimed!'}, status=400)
+    uc.claimed = True
+    uc.save()
 
-            # Give currency
-            profile = request.user.profile
-            profile.currency_balance += user_challenge.challenge.reward_amount
-            profile.save()
-
-            user_challenge.claimed = True
-            user_challenge.save()
-
-            return Response({'message': 'Reward claimed successfully!', 'new_balance': profile.currency_balance})
-        except UserChallenge.DoesNotExist:
-            return Response({'error': 'Challenge not found.'}, status=404)
+    return Response(
+        {'message': f'Challenge "{uc.challenge.name}" claimed! +{uc.challenge.reward} coins'},
+        status=status.HTTP_200_OK
+    )

@@ -1,14 +1,18 @@
 from rest_framework import serializers
-from .models import Challenge, UserChallenge
-
-class ChallengeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Challenge
-        fields = '__all__'
+from .models import UserChallenge
 
 class UserChallengeSerializer(serializers.ModelSerializer):
-    challenge = ChallengeSerializer()
+    name = serializers.CharField(source='challenge.name', read_only=True)
+    description = serializers.CharField(source='challenge.description', read_only=True)
+    reward = serializers.IntegerField(source='challenge.reward', read_only=True)
 
     class Meta:
         model = UserChallenge
-        fields = '__all__'
+        fields = [
+            'id',
+            'name',
+            'description',
+            'reward',
+            'completed',
+            'claimed',
+        ]

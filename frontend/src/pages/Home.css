@@ -1,128 +1,109 @@
-.home-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 90vh;
-  text-align: center;
-  background: linear-gradient(to right, #a8edea, #fed6e3);
-}
-
-.home-content {
-  padding: 2rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.home-content h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.home-content p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-}
-
-.home-image {
-  width: 200px;
-  margin-bottom: 2rem;
-}
-
-.home-button {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background: #0070f3;
-  color: white;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: background 0.3s;
-}
-
-.home-button:hover {
-  background: #005bb5;
-}
-/* src/pages/Home.css */
-
-.daily-pack-button {
-  margin-top: 1rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #0070f3;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.daily-pack-button:hover {
-  background-color: #0056b3;
-}
-
-.home-page {
-  text-align: center;
-  margin-top: 2rem;
-}
-/* src/pages/Home.css */
+/* frontend/src/pages/Home.css */
 
 .home-container {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 80vh;
-  text-align: center;
+  background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
   padding: 2rem;
 }
 
 .home-content {
-  max-width: 600px;
+  background: #ffffff;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+
+  /* center everything vertically and horizontally */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .home-pokeball {
-  width: 80px;
-  height: 80px;
+  width: 96px;
+  height: 96px;
   margin-bottom: 1rem;
+  animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .home-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  margin: 0.5rem 0 0.75rem;
+  color: #222;
 }
 
 .home-subtitle {
-  font-size: 1.25rem;
-  margin-bottom: 2rem;
-  color: #555;
-}
-
-.daily-pack-button {
-  background-color: #0070f3;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 50px;
   font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  color: #555;
+  margin-bottom: 1.5rem;
 }
 
-.daily-pack-button:hover {
-  background-color: #0056b3;
+/* BUTTON ROW */
+.home-buttons {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+.home-button {
+  /* each button grabs equal share of the row */
+  flex: 1;
+  margin: 0 0.5rem;      /* gap between buttons */
+
+  /* fixed height, full-width of its flex-slot */
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #0070f3;
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  text-decoration: none; /* if you’re using <Link> */
+}
+
+.home-button:hover {
+  background-color: #005bb5;
+  transform: translateY(-1px);
+}
+
+.home-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Optional: remove side-margins on first & last so they line up flush */
+.home-button:first-child {
+  margin-left: 0;
+}
+.home-button:last-child {
+  margin-right: 0;
 }
 
 .home-message {
   margin-top: 1rem;
-  font-weight: bold;
-  color: #0070f3;
-}
-.spinning {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  padding: 0.75rem 1rem;
+  background: #e6f7ff;
+  border: 1px solid #91d5ff;
+  color: #0050b3;
+  border-radius: 8px;
+  font-size: 0.95rem;
 }
