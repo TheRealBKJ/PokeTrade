@@ -1,50 +1,60 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axios';
-import { Link } from 'react-router-dom';
-import './Trademarket.css'; // Import the styles
+import { useNavigate } from 'react-router-dom';
+import './Trademarket.css';
 
-const TradeMarket = () => {
-  const [cards, setCards] = useState([]);
+export default function TradeMarket() {
+  const [cards,   setCards]   = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error,   setError]   = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get('https://api.pokemontcg.io/v2/cards', {
-        headers: {
-          'X-Api-Key': 'YOUR_API_KEY_HERE', // Replace this!
-        },
-        params: {
-          pageSize: 20,
-        },
+      .get('usercollections/all/')
+      .then(res => {
+        setCards(res.data);
+        setLoading(false);
       })
-      .then((res) => setCards(res.data.data))
-      .catch((err) => console.error(err));
+      .catch(err => {
+        console.error('Marketplace load error:', err);
+        setError('Could not load cards.');
+        setLoading(false);
+      });
   }, []);
 
+  if (loading) return <p className="tm__status">Loading marketplace…</p>;
+  if (error)   return <p className="tm__status tm__error">{error}</p>;
+  if (!cards.length) return <p className="tm__status">No cards in the marketplace.</p>;
+
   return (
-    <div className="page">
-      <h1>Trade Market</h1>
-      <div className="trade-grid">
-        {cards.map((card) => (
-        <div className="card-tile" key={card.id}>
-          <img src={card.images.small} alt={card.name} />
-          <h3 className="card-name">
-          <Link
-            to={`/pokemon/${encodeURIComponent(
-              card.name
-                .replace(/\b(GX|VSTAR|V|EX)\b/gi, "")
-                .trim()
-                .toLowerCase()
-            )}?cardName=${encodeURIComponent(card.name)}`}
+    <div className="tm">
+      <h2 className="tm__title">PokéTrade Marketplace</h2>
+      <div className="tm__grid">
+        {cards.map(card => (
+          <div
+            key={card.id}
+            className="tm__card"
+            onClick={() => navigate(`/trade/new/${card.user}/${card.card_id}`)}
           >
-            {card.name}
-          </Link>
-          </h3>
-        </div>
+            <div className="tm__img-wrap">
+              <img
+                src={card.card_image_url}
+                alt={card.card_name}
+                className="tm__img"
+              />
+            </div>
+            <div className="tm__info">
+              <h3 className="tm__name">{card.card_name}</h3>
+              <p className="tm__meta">#{card.card_id}</p>
+              <p className="tm__meta">Owner: <strong>{card.user}</strong></p>
+            </div>
+            <div className="tm__actions">
+              <button className="tm__btn">Request Trade</button>
+            </div>
+          </div>
         ))}
       </div>
     </div>
   );
-};
-
-export default TradeMarket;
-
+}

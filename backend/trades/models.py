@@ -18,8 +18,11 @@ class Trade(models.Model):
         blank=True,
         related_name='trades_received'
     )
-    offered_card_id   = models.IntegerField()
-    requested_card_id = models.IntegerField()
+
+    # Changed to CharField to hold IDs like "ex12-2"
+    offered_card_id   = models.CharField(max_length=50)
+    requested_card_id = models.CharField(max_length=50)
+
     status = models.CharField(
         max_length=10,
         choices=[
@@ -33,4 +36,7 @@ class Trade(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.trader.username} offers #{self.offered_card_id} for #{self.requested_card_id} [{self.status}]"
+        return (
+            f"{self.trader.username} offers #{self.offered_card_id} "
+            f"for #{self.requested_card_id} [{self.status}]"
+        )

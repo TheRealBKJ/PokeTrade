@@ -1,31 +1,113 @@
-.trade-request-form {
+.trf {
   max-width: 600px;
   margin: 2rem auto;
-  padding: 2rem;
-  background: #f9f9f9;
-  border-radius: 10px;
+  padding: 1.5rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.trf__title {
   text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  color: #333;
 }
 
-.trade-request-form form {
+.trf__requested {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.trade-request-form select, .trade-request-form button {
-  padding: 0.75rem;
-  font-size: 1rem;
+.trf__req-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
   border-radius: 8px;
-  border: 1px solid #ccc;
 }
 
-.trade-request-form button {
-  background-color: #4CAF50;
-  color: white;
+.trf__req-info h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #222;
+}
+
+.trf__req-info p {
+  margin: 0.2rem 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.trf__sub {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #444;
+}
+
+.trf__status {
+  text-align: center;
+  color: #666;
+  margin: 1rem 0;
+}
+
+.trf__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px,1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.trf__card {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 0.5rem;
+  text-align: center;
   cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, transform 0.2s;
 }
 
-.trade-request-form button:hover {
-  background-color: #45a049;
+.trf__card:hover {
+  transform: translateY(-2px);
+}
+
+.trf__card.selected {
+  border-color: #007bff;
+}
+
+.trf__img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.trf__name {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.trf__btn {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.trf__btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.trf__btn:not(:disabled):hover {
+  background: #218838;
 }

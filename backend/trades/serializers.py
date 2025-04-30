@@ -2,8 +2,13 @@ from rest_framework import serializers
 from .models import Trade
 
 class TradeSerializer(serializers.ModelSerializer):
-    trader_username    = serializers.CharField(source='trader.username',    read_only=True)
-    recipient           = serializers.PrimaryKeyRelatedField(read_only=True)
+    # These will now accept any non‐empty string
+    offered_card_id   = serializers.CharField()
+    requested_card_id = serializers.CharField()
+
+    # Read‐only extras
+    trader_username    = serializers.CharField(source='trader.username', read_only=True)
+    recipient          = serializers.PrimaryKeyRelatedField(read_only=True)
     recipient_username = serializers.CharField(source='recipient.username', read_only=True)
 
     class Meta:
