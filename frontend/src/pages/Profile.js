@@ -1,11 +1,15 @@
+<<<<<<< HEAD
 // frontend/src/pages/Profile.js
 
+=======
+>>>>>>> f657f69e79c0ff904bee8d888c218105d83cda8c
 import React, { useState, useEffect } from 'react';
 import api from '../axios';
 import './Profile.css';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);  // Add loading state
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -15,6 +19,11 @@ const Profile = () => {
       } catch (err) {
         console.error('Failed to fetch profile:', err);
         alert('Unable to load profile.');
+<<<<<<< HEAD
+=======
+      } finally {
+        setLoading(false);  // Set loading to false once the data is fetched or an error occurs
+>>>>>>> f657f69e79c0ff904bee8d888c218105d83cda8c
       }
     };
     fetchProfile();
@@ -27,9 +36,15 @@ const Profile = () => {
 
       const cardName = card.name;
 
+<<<<<<< HEAD
       alert(`${message}\nNew card ➡️ ${cardName}`);
 
       // refresh profile (balance updated)
+=======
+      alert(
+        message + (new_card ? `\nNew card ➡️ ${cardName}` : '')
+      );
+>>>>>>> f657f69e79c0ff904bee8d888c218105d83cda8c
       const updated = await api.get('profiles/');
       setProfile(updated.data);
     } catch (err) {
@@ -42,7 +57,7 @@ const Profile = () => {
     }
   };
 
-  if (!profile) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;  // Show loading message while waiting for data
 
   return (
     <div className="profile-page">
