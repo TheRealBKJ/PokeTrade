@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 
 class ChatBotView(APIView):
     # allow public access (or change to IsAuthenticated if you want)
@@ -12,6 +13,7 @@ class ChatBotView(APIView):
     def post(self, request, *args, **kwargs):
         user_msg = request.data.get('message', '').strip()
         user_id  = request.data.get('userID', 'unknown')
+        username = request.user.username
 
         # simple rule-based replies
         text = user_msg.lower()
@@ -19,7 +21,7 @@ class ChatBotView(APIView):
             bot_reply = "🤖 I didn’t catch that—could you say it again?"
         elif any(greet in text for greet in ['hi', 'hello', 'hey']):
             bot_reply = (
-                f"🐾 Hello, Trainer {user_id}! "
+                f"🐾 Hello, Trainer {username}! "
                 "I’m your PokéTrade Assistant—how can I help you today?"
             )
         elif 'help' in text or 'website' in text:
