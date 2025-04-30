@@ -1,10 +1,10 @@
-// frontend/src/pages/Profile.js
 import React, { useState, useEffect } from 'react';
 import api from '../axios';
 import "./Profile.css";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);  // Add loading state
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -15,7 +15,7 @@ const Profile = () => {
         console.error('Failed to fetch profile:', err);
         alert('Unable to load profile.');
       } finally {
-        setLoading(false);
+        setLoading(false);  // Set loading to false once the data is fetched or an error occurs
       }
     };
     fetchProfile();
@@ -32,7 +32,7 @@ const Profile = () => {
         : new_card;
 
       alert(
-        res.data.message + (res.data.new_card ? `\nNew card ➡️ ${res.data.new_card}` : '')
+        message + (new_card ? `\nNew card ➡️ ${cardName}` : '')
       );
       const updated = await api.get('profiles/');
       setProfile(updated.data);
@@ -46,7 +46,7 @@ const Profile = () => {
     }
   };
 
-  if (!profile) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;  // Show loading message while waiting for data
 
   return (
     <div className="profile-page">
