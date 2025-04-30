@@ -109,6 +109,12 @@ const NavBar = () => {
           </Link>
         </li>
         <li>
+        <li>
+          <Link to="/auctions" onClick={(e) => handleNav(e, '/auctions', true)}>
+            Auction
+          </Link>
+        </li>
+
           <Link
             to="/trade/history"
             onClick={(e) => handleNav(e, '/trade/history', true)}
