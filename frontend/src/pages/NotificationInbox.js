@@ -1,28 +1,38 @@
-import React, { useEffect, useState } from "react";
-import axios from '../axios';
-import "./NotificationInbox.css";
+// frontend/src/pages/NotificationInbox.js
+import React, { useEffect, useState } from 'react';
+import api from '../axios';
 
 const NotificationInbox = () => {
-  const [notifications, setNotifications] = useState([]);
+  const [notes, setNotes] = useState([]);
 
   useEffect(() => {
-    axios.get("/api/notifications/")  // Make sure backend is running
-      .then(res => setNotifications(res.data))
-      .catch(err => console.error("Error fetching notifications:", err));
+    const fetchNotes = async () => {
+      try {
+        // GET http://localhost:8000/api/notifications/
+        const res = await api.get('notifications/');
+        setNotes(res.data);
+      } catch (err) {
+        console.error('Failed to fetch notifications:', err);
+        alert('Unable to load notifications.');
+      }
+    };
+    fetchNotes();
   }, []);
 
   return (
     <div className="notifications-page">
-      <h2>Your Notifications</h2>
-      <ul className="notification-list">
-        {notifications.map((notif) => (
-          <li key={notif.id} className={notif.read ? "read" : "unread"}>
-            {notif.message}
-          </li>
-        ))}
-      </ul>
+      <h1>Your Notifications 🔔</h1>
+      {notes.length === 0 ? (
+        <p>No new notifications.</p>
+      ) : (
+        notes.map(n => (
+          <div key={n.id} className="notification-item">
+            {n.message}
+          </div>
+        ))
+      )}
     </div>
   );
 };
 
-export default NotificationInbox; // ✅ **THIS LINE IS CRITICAL**
+export default NotificationInbox;
