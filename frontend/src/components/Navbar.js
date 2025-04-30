@@ -14,7 +14,6 @@ const NavBar = () => {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  // Handles navigation, redirecting to /login if auth is required
   const handleNav = (e, path, authRequired = false) => {
     e.preventDefault();
     setMenuOpen(false);
@@ -70,18 +69,12 @@ const NavBar = () => {
           </Link>
         </li>
         <li>
-          <Link
-            to="/collection"
-            onClick={(e) => handleNav(e, '/collection', true)}
-          >
+          <Link to="/collection" onClick={(e) => handleNav(e, '/collection', true)}>
             Collection
           </Link>
         </li>
         <li>
-          <Link
-            to="/daily-challenges"
-            onClick={(e) => handleNav(e, '/daily-challenges', true)}
-          >
+          <Link to="/daily-challenges" onClick={(e) => handleNav(e, '/daily-challenges', true)}>
             Daily Challenges
           </Link>
         </li>
@@ -96,10 +89,7 @@ const NavBar = () => {
           </Link>
         </li>
         <li>
-          <Link
-            to="/trade/requests"
-            onClick={(e) => handleNav(e, '/trade/requests', true)}
-          >
+          <Link to="/trade/requests" onClick={(e) => handleNav(e, '/trade/requests', true)}>
             Trade Requests
           </Link>
         </li>
@@ -109,16 +99,12 @@ const NavBar = () => {
           </Link>
         </li>
         <li>
-        <li>
           <Link to="/auctions" onClick={(e) => handleNav(e, '/auctions', true)}>
             Auction
           </Link>
         </li>
-
-          <Link
-            to="/trade/history"
-            onClick={(e) => handleNav(e, '/trade/history', true)}
-          >
+        <li>
+          <Link to="/trade/history" onClick={(e) => handleNav(e, '/trade/history', true)}>
             Trade History
           </Link>
         </li>
@@ -128,10 +114,7 @@ const NavBar = () => {
           </Link>
         </li>
         <li>
-          <Link
-            to="/notifications"
-            onClick={(e) => handleNav(e, '/notifications', true)}
-          >
+          <Link to="/notifications" onClick={(e) => handleNav(e, '/notifications', true)}>
             Notifications
           </Link>
         </li>
@@ -140,8 +123,6 @@ const NavBar = () => {
             Profile
           </Link>
         </li>
-
-        {/* Sign In / Sign Out toggle */}
         <li>
           {token ? (
             <a href="/logout" onClick={handleLogout}>
