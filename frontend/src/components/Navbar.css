@@ -1,5 +1,3 @@
-/* src/components/NavBar.css */
-
 :root {
   /* Colors & sizes */
   --navbar-bg: #1a1a1a;
@@ -12,8 +10,8 @@
   /* Spacing */
   --navbar-padding-y: 1rem;
   --navbar-padding-x: 2rem;
-  --link-gap: 1rem;              /* tightened now that each has padding */
-  --clickable-padding: 0.5rem;   /* padding around each link/icon */
+  --link-gap: 1rem;
+  --clickable-padding: 0.5rem;
   --dropdown-gap: 0.5rem;
   --dropdown-padding-y: 0.5rem;
   --dropdown-padding-x: 1rem;
@@ -21,7 +19,7 @@
   /* Typography */
   --font-size-base: 1rem;
   --font-size-lg: 1.1rem;
-  --font-size-xl: 1.75rem;       /* bumped up for logo */
+  --font-size-xl: 1.75rem;
 }
 
 .navbar {
@@ -57,7 +55,7 @@
 }
 
 .pokeball-icon {
-  font-size: 2rem;               /* slight bump */
+  font-size: 2rem;
   color: var(--highlight-color);
   padding: var(--clickable-padding);
   border-radius: 0.25rem;
@@ -137,7 +135,6 @@
   display: block;
 }
 
-/* Currency display stays in flow */
 .currency-display {
   font-size: var(--font-size-lg);
   font-weight: bold;
@@ -153,7 +150,6 @@
   background: rgba(255, 215, 0, 0.1);
 }
 
-/* Hamburger (mobile) */
 .hamburger {
   display: none;
   font-size: 1.5rem;

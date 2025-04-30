@@ -1,5 +1,6 @@
+// frontend/src/components/NavBar.js
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from '../axios';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { SiPokemon } from 'react-icons/si';
@@ -7,37 +8,43 @@ import './Navbar.css';
 
 const NavBar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [username, setUsername] = useState('');
   const [currencyBalance, setCurrencyBalance] = useState(null);
+  const navigate = useNavigate();
+  const token = localStorage.getItem('access_token');
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
+  // Handles navigation, redirecting to /login if auth is required
+  const handleNav = (e, path, authRequired = false) => {
+    e.preventDefault();
+    setMenuOpen(false);
+    if (authRequired && !token) {
+      navigate('/login', { replace: true });
+    } else {
+      navigate(path);
+    }
+  };
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    localStorage.removeItem('access_token');
+    setMenuOpen(false);
+    navigate('/login', { replace: true });
+  };
+
   useEffect(() => {
-    const fetchProfileAndCurrency = async () => {
-      const token = localStorage.getItem('access_token');
-      if (token) {
-        try {
-          const profileRes = await axios.get('/api/users/profile/', {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          setUsername(profileRes.data.username);
-
-          const currencyRes = await axios.get('/api/profile/currency/', {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          setCurrencyBalance(currencyRes.data.currency_balance);
-        } catch (err) {
-          console.error('Failed to fetch user info:', err);
-        }
+    if (!token) return;
+    (async () => {
+      try {
+        const { data: curr } = await axios.get('/api/profile/currency/', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setCurrencyBalance(curr.currency_balance);
+      } catch (err) {
+        console.error('Failed to fetch currency:', err);
       }
-    };
-
-    fetchProfileAndCurrency();
-  }, []);
+    })();
+  }, [token]);
 
   return (
     <nav className="navbar">
@@ -46,7 +53,6 @@ const NavBar = () => {
         PokeTrade
       </div>
 
-      {/* ⭐ Add currency visibly on the right side */}
       {currencyBalance !== null && (
         <div className="currency-display">
           💰 {currencyBalance} Coins
@@ -58,34 +64,88 @@ const NavBar = () => {
       </div>
 
       <ul className={`nav-links ${menuOpen ? 'active' : ''}`}>
-        <li><Link to="/" onClick={toggleMenu}>Home</Link></li>
-        <li><Link to="/collection" onClick={toggleMenu}>Collection</Link></li>
-        <li><Link to="/daily-challenges" onClick={toggleMenu}>Daily Challenges</Link></li>
-        <li><Link to="/browse" onClick={toggleMenu}>Browse Collections</Link></li>
-        <li><Link to="/trade" onClick={toggleMenu}>Marketplace</Link></li>
-        <li><Link to="/trade/requests" onClick={toggleMenu}>Trade Requests</Link></li>
-        <li><Link to="/trade/new" onClick={toggleMenu}>Make a Trade</Link></li>
-        <li><Link to="/trade/history" onClick={toggleMenu}>Trade History</Link></li>
-        <li><Link to="/messages" onClick={toggleMenu}>Messages</Link></li>
-        <li><Link to="/notifications" onClick={toggleMenu}>Notifications</Link></li>
-        <li><Link to="/profile" onClick={toggleMenu}>Profile</Link></li>
+        <li>
+          <Link to="/" onClick={(e) => handleNav(e, '/', false)}>
+            Home
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/collection"
+            onClick={(e) => handleNav(e, '/collection', true)}
+          >
+            Collection
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/daily-challenges"
+            onClick={(e) => handleNav(e, '/daily-challenges', true)}
+          >
+            Daily Challenges
+          </Link>
+        </li>
+        <li>
+          <Link to="/browse" onClick={(e) => handleNav(e, '/browse', true)}>
+            Browse Collections
+          </Link>
+        </li>
+        <li>
+          <Link to="/trade" onClick={(e) => handleNav(e, '/trade', true)}>
+            Marketplace
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/trade/requests"
+            onClick={(e) => handleNav(e, '/trade/requests', true)}
+          >
+            Trade Requests
+          </Link>
+        </li>
+        <li>
+          <Link to="/trade/new" onClick={(e) => handleNav(e, '/trade/new', true)}>
+            Make a Trade
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/trade/history"
+            onClick={(e) => handleNav(e, '/trade/history', true)}
+          >
+            Trade History
+          </Link>
+        </li>
+        <li>
+          <Link to="/messages" onClick={(e) => handleNav(e, '/messages', true)}>
+            Messages
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/notifications"
+            onClick={(e) => handleNav(e, '/notifications', true)}
+          >
+            Notifications
+          </Link>
+        </li>
+        <li>
+          <Link to="/profile" onClick={(e) => handleNav(e, '/profile', true)}>
+            Profile
+          </Link>
+        </li>
 
-        <li className="dropdown">
-          <span>User ▼</span>
-          <ul className="dropdown-content">
-            {username ? (
-              <>
-                <li style={{ fontWeight: 'bold', textAlign: 'center' }}>Welcome, {username}</li>
-                <li><Link to="/settings" onClick={toggleMenu}>Settings</Link></li>
-                <li><Link to="/logout" onClick={toggleMenu}>Logout</Link></li>
-              </>
-            ) : (
-              <>
-                <li><Link to="/login" onClick={toggleMenu}>Login</Link></li>
-                <li><Link to="/register" onClick={toggleMenu}>Register</Link></li>
-              </>
-            )}
-          </ul>
+        {/* Sign In / Sign Out toggle */}
+        <li>
+          {token ? (
+            <a href="/logout" onClick={handleLogout}>
+              Sign Out
+            </a>
+          ) : (
+            <Link to="/login" onClick={toggleMenu}>
+              Sign In
+            </Link>
+          )}
         </li>
       </ul>
     </nav>
