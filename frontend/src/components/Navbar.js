@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from '../axios';
 import { FaBars, FaTimes } from 'react-icons/fa';
-import { SiPokemon } from 'react-icons/si';
 import './Navbar.css';
 
 const NavBar = () => {
@@ -48,8 +47,13 @@ const NavBar = () => {
   return (
     <nav className="navbar">
       <div className="logo">
-        <SiPokemon className="pokeball-icon" />
-        PokeTrade
+        <Link to="/" onClick={(e) => handleNav(e, '/', false)} className="logo-link">
+          <img
+            src="/PokeTradeLogo.png"
+            alt="PokeTrade Logo"
+            className="logo-img"
+          />
+        </Link>
       </div>
 
       {currencyBalance !== null && (

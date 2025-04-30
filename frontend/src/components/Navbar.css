@@ -43,15 +43,8 @@
   position: relative;
 }
 
-.logo::after {
-  content: '';
-  position: absolute;
-  bottom: -0.2rem;
-  left: 0;
-  width: 50%;
-  height: 0.2rem;
-  background: var(--highlight-color);
-  border-radius: 2px;
+.logo-img {
+  height: 45px;
 }
 
 .pokeball-icon {
