@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'corsheaders',               # ← must be first
+    'corsheaders',               # ← CORS headers support must be first
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'messaging',
 ]
 
-
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',            # ← must come before CommonMiddleware
     'django.middleware.security.SecurityMiddleware',
@@ -65,9 +64,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
-# CORS
-
+# CORS configuration
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
