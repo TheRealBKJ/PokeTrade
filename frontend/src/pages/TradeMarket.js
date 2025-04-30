@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axios';
 import { Link } from 'react-router-dom';
-import './Trademarket.css'; // Import the styles
+import './TradeMarket.css'; // Import the styles
 
 const TradeMarket = () => {
   const [cards, setCards] = useState([]);

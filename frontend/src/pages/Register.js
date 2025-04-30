@@ -1,6 +1,7 @@
+// frontend/src/pages/Register.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../axios';        // ← import your configured instance
+import api from '../axios';        // ← your configured instance
 import './Register.css';
 
 const Register = () => {
@@ -24,25 +25,44 @@ const Register = () => {
     setError('');
     setSuccess('');
 
+    // ── CLIENT-SIDE VALIDATION ──
+    if (!formData.username.trim()) {
+      setError('Username is required.');
+      return;
+    }
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+
     try {
-      // POST now goes to http://localhost:8000/api/users/register/
+      // only runs if client-side checks pass
       await api.post('users/register/', formData);
-      setSuccess('Registration successful! Redirecting to login...');
+      setSuccess('Registration successful! Redirecting to login…');
       setFormData({ username: '', password: '' });
 
       setTimeout(() => navigate('/login'), 1500);
     } catch (err) {
       console.error(err);
-      if (err.response && err.response.data) {
-        // Build a message from whatever field errors DRF returned
-        const messages = Object.entries(err.response.data)
-          .map(([field, msgs]) => `${field}: ${msgs.join(' ')}`)
-          .join(' ');
-        setError(messages);
-      } else if (err.response) {
-        setError('Server error. Please try again later.');
-      } else {
+      // robustly parse DRF field errors or detail strings:
+      if (err.response?.data) {
+        const data = err.response.data;
+        // if it's an object of arrays
+        if (typeof data === 'object') {
+          const messages = Object.entries(data)
+            .map(([field, msgs]) => {
+              if (Array.isArray(msgs)) return msgs.join(' ');
+              return String(msgs);
+            })
+            .join(' ');
+          setError(messages);
+        } else {
+          setError(String(data));
+        }
+      } else if (err.request) {
         setError('Network error. Please check your connection.');
+      } else {
+        setError('Server error. Please try again later.');
       }
     }
   };
@@ -56,23 +76,25 @@ const Register = () => {
       {success && <p className="success">{success}</p>}
 
       <form onSubmit={handleSubmit} className="login-form">
-        <input 
-          type="text" 
-          name="username" 
+        <input
+          type="text"
+          name="username"
           placeholder="Username"
           value={formData.username}
           onChange={handleChange}
-          required 
+          required
         />
-        <input 
-          type="password" 
-          name="password" 
+        <input
+          type="password"
+          name="password"
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
-          required 
+          required
         />
-        <button type="submit" className="auth-button">Register</button>
+        <button type="submit" className="auth-button">
+          Register
+        </button>
       </form>
     </div>
   );

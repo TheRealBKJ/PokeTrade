@@ -1,14 +1,131 @@
 # backend/api/views.py
+
 import random
+import requests
+
+from django.utils import timezone
+from datetime import timedelta
+
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny
 
-class ChatBotView(APIView):
+
+class ProfileView(APIView):
+    """
+    GET /api/profiles/
+    Returns the user's username and currency balance.
+    (No auth required)
+    """
+    authentication_classes = []       # disable DRF auth
     permission_classes = [AllowAny]
 
-    # map “intents” → lists of reply templates (you can expand these)
+    def get(self, request, *args, **kwargs):
+        profile = request.user.profile
+        return Response({
+            "username": request.user.username,
+            "currency_balance": profile.currency_balance,
+        })
+
+
+@api_view(['POST'])
+@authentication_classes([])  # disable DRF auth
+@permission_classes([AllowAny])
+def claim_daily_pack(request):
+    """
+    POST /api/profiles/daily-pack/
+    Enforces a 24h cooldown, fetches a random TCG card,
+    updates the user's balance + last_claimed, and returns the card.
+    """
+    profile = request.user.profile
+    now = timezone.now()
+
+    # 1) 24h cooldown check
+    if profile.last_claimed and now - profile.last_claimed < timedelta(hours=24):
+        return Response(
+            {"error": "You have already claimed today."},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    # 2) Pull a batch of cards
+    api_res = requests.get('https://api.pokemontcg.io/v2/cards?pageSize=250')
+    if api_res.status_code != 200:
+        return Response(
+            {"error": "Failed to fetch Pokémon cards."},
+            status=status.HTTP_502_BAD_GATEWAY
+        )
+
+    cards = api_res.json().get('data', [])
+    if not cards:
+        return Response(
+            {"error": "No cards available."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+    # 3) Pick one at random
+    card = random.choice(cards)
+
+    # 4) Award coins and update last_claimed
+    reward = 50
+    profile.currency_balance += reward
+    profile.last_claimed = now
+    profile.save()
+
+    # 5) Return the new card + updated balance
+    return Response({
+        "message": "Daily pack claimed!",
+        "card": {
+            "id": card["id"],
+            "name": card["name"],
+            "image_url": card["images"]["small"]
+        },
+        "new_balance": profile.currency_balance
+    })
+
+
+@api_view(['GET'])
+@authentication_classes([])  # disable DRF auth
+@permission_classes([AllowAny])
+def trading_recommendation(request):
+    """
+    GET /api/trading/recommendation/
+    Fetches two random Pokémon cards and returns them as a “trade recommendation.”
+    """
+    api_res = requests.get('https://api.pokemontcg.io/v2/cards?pageSize=250')
+    if api_res.status_code != 200:
+        return Response(
+            {"error": "Failed to fetch Pokémon cards."},
+            status=status.HTTP_502_BAD_GATEWAY
+        )
+
+    cards = api_res.json().get('data', [])
+    if len(cards) < 2:
+        return Response(
+            {"error": "Not enough cards available."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+    card1, card2 = random.sample(cards, 2)
+    return Response({
+        "recommendation": [
+            {"id": card1["id"], "name": card1["name"], "image_url": card1["images"]["small"]},
+            {"id": card2["id"], "name": card2["name"], "image_url": card2["images"]["small"]},
+        ]
+    })
+
+
+class ChatbotView(APIView):
+    """
+    POST /api/chatbot/
+    No auth required; if you send “recommend trade” it returns
+    two random Pokémon cards. Otherwise it just echoes.
+    """
+    authentication_classes = []    # disable DRF auth
+    permission_classes = [AllowAny]
+
+    # intent-response mapping for simple Q&A
     INTENT_RESPONSES = {
         'trade': [
             "Sure, {username}! To trade cards, go to the Marketplace page and propose a new offer.",
@@ -36,7 +153,6 @@ class ChatBotView(APIView):
         ]
     }
 
-    # default fallbacks when no intent matches
     FALLBACKS = [
         "{username}, I’m not sure I got that. Could you rephrase?",
         "{username}, sorry, I didn’t understand. Want to try asking in a different way?"
@@ -57,13 +173,17 @@ class ChatBotView(APIView):
         # 2) greetings override
         if any(g in text for g in ["hi", "hello", "hey"]):
             greeting = random.choice(["Hello", "Hi", "Hey"])
-            reply = f"{greeting}, {username}! How can I help you today?"
-            return Response({"response": reply}, status=status.HTTP_200_OK)
+            return Response(
+                {"response": f"{greeting}, {username}! How can I help you today?"},
+                status=status.HTTP_200_OK
+            )
 
         # 3) empty message
         if not text:
-            reply = f"Hey {username}, I didn’t catch that—could you say it again?"
-            return Response({"response": reply}, status=status.HTTP_200_OK)
+            return Response(
+                {"response": f"Hey {username}, I didn’t catch that—could you say it again?"},
+                status=status.HTTP_200_OK
+            )
 
         # 4) fallback
         reply = random.choice(self.FALLBACKS).format(username=username)

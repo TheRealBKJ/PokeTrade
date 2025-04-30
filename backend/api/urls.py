@@ -1,12 +1,14 @@
-# backend/api/urls.py
-
 from django.urls import path
-from .views import ChatBotView
-
-# (optional) namespacing if you ever want to reverse('api:chatbot')
-app_name = 'api'
+from .views import (
+    ProfileView,
+    claim_daily_pack,
+    trading_recommendation,
+    ChatbotView,
+)
 
 urlpatterns = [
-    # POST http://<host>/api/chatbot/ → ChatBotView.post()
-    path('', ChatBotView.as_view(), name='chatbot'),
+    path('profiles/',       ProfileView.as_view(),          name='profile'),
+    path('profiles/daily-pack/', claim_daily_pack,          name='claim_daily_pack'),
+    path('trading/recommendation/', trading_recommendation,  name='trading_recommendation'),
+    path('',        ChatbotView.as_view(),          name='chatbot'),
 ]
